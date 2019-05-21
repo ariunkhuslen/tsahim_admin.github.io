@@ -1,8 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
+/* import PropTypes from "prop-types"; */
 import { login } from "../../actions/auth";
 import { Form, Icon, Input, Button /* , Checkbox  */ } from "antd";
+import CryptoJS from "crypto-js";
 
 class LoginPage extends React.Component {
   state = {
@@ -15,6 +16,7 @@ class LoginPage extends React.Component {
   };
   onSubmit = data => {
     this.props.history.push("/realHomePage");
+
     console.log(this.props);
   };
   onChange = e =>
@@ -24,8 +26,17 @@ class LoginPage extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.history.push("/realHomePage");
-    console.log("yaag darsan", e);
+    let password1 = "" + CryptoJS.SHA256(this.refs.password.state.value);
+    let temp = {
+      username: this.refs.username.state.value,
+      password: password1
+    };
+    this.props.login(temp);
+
+    /* this.props.login(); */
+    /* this.props.login(temp) */
+    /* this.props.history.push("/realHomePage"); */
+    console.log("yaag darsan", e.target);
     console.log(this.props);
   };
 
@@ -41,6 +52,8 @@ class LoginPage extends React.Component {
                   <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
                 }
                 placeholder="Username"
+                name="username"
+                ref="username"
               />
             </Form.Item>
             <Form.Item>
@@ -48,6 +61,8 @@ class LoginPage extends React.Component {
                 prefix={
                   <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
                 }
+                name="password"
+                ref="password"
                 type="password"
                 placeholder="Password"
               />
@@ -70,11 +85,10 @@ class LoginPage extends React.Component {
   }
 }
 
-LoginPage.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }).isRequired,
-  login: PropTypes.func.isRequired
+const mapStateToProps = state => {
+  return {
+    login: login
+  };
 };
 
-export default connect(null, { login })(LoginPage);
+export default connect(mapStateToProps)(LoginPage);

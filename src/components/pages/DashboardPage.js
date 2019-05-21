@@ -3,7 +3,7 @@ import { Table, Modal, Upload, Icon } from "antd";
 /* import { Link } from "react-router-dom"; */
 import "antd/dist/antd.css";
 import { Form, Input, Button } from "antd";
-const URL = "http://10.3.133.232:6001/";
+const URL = "http://192.168.137.1:6001/";
 const columns = [
   {
     title: "Барааны id",
@@ -31,32 +31,6 @@ const columns = [
     key: "realqty"
   }
 ];
-/* function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-} */
-/* const data = [
-  {
-    sprice: "1",
-    skunm: "John Brown",
-    price: 32,
-    realqty: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"]
-  },
-  {
-    sprice: "2",
-    skunm: "Jim Green",
-    price: 42,
-    realqty: "London No. 1 Lake Park",
-    tags: ["loser"]
-  },
-  {
-    sprice: "3",
-    skunm: "Joe Black",
-    price: 32,
-    realqty: "Sidney No. 1 Lake Park",
-    tags: ["cool", "teacher"]
-  }
-]; */
 
 class DashboardPage extends React.Component {
   state = {
@@ -71,15 +45,7 @@ class DashboardPage extends React.Component {
     visible1: false,
     previewVisible: false,
     previewImage: "",
-    fileList: [
-      /* {
-        uid: "-1",
-        name: "xxx.png",
-        status: "done",
-        url:
-          "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-      } */
-    ]
+    fileList: []
   };
 
   showModal = () => {
@@ -91,8 +57,7 @@ class DashboardPage extends React.Component {
   showModal1 = () => {
     this.setState({ visible1: true });
   };
-
-  componentWillMount() {
+  getData() {
     fetch(URL + "product/getAllProduct")
       .then(function(response) {
         return response.json();
@@ -101,10 +66,13 @@ class DashboardPage extends React.Component {
         this.setState({ data: myJson.data });
       });
   }
+  componentWillMount() {
+    this.getData();
+  }
 
   handleOk = () => {
     this.setState({
-      ModalText: "The modal will be closed after two seconds",
+      ModalText: "Модал хаагдах.",
       confirmLoading: true
     });
     setTimeout(() => {
@@ -117,7 +85,7 @@ class DashboardPage extends React.Component {
 
   handleOk1 = () => {
     this.setState({
-      ModalText: "The modal will be closed after two seconds",
+      ModalText: "Модал хаагдах.",
       confirmLoading: true
     });
     setTimeout(() => {
@@ -129,21 +97,18 @@ class DashboardPage extends React.Component {
   };
 
   handleCancel = () => {
-    console.log("Clicked cancel button");
     this.setState({
       visible: false
     });
   };
 
   handleCancel2 = () => {
-    console.log("Clicked cancel button");
     this.setState({
       visible2: false
     });
   };
 
   handleCancel1 = () => {
-    console.log("Edit cancel button");
     this.setState({
       visible1: false
     });
@@ -182,29 +147,7 @@ class DashboardPage extends React.Component {
         fetch(URL + `product/addProduct`, {
           method: "POST",
           body: formData
-        })
-          .then(response => response.json())
-          .then(response => console.log("Success:", JSON.stringify(response)))
-          .catch(error => console.error("Error:", error));
-
-        console.log(values);
-
-        /* formData.append("values", values);
-        formData.append("files", this.state.fileList[0]);
-        const request = new Request(URL + `product/addProduct`, {
-          method: "POST",
-          headers: new Headers({
-            "Content-Type": "application/json"
-          }),
-          body: formData
-        });
-        return fetch(request)
-          .then(response => {
-            console.log(response);
-          })
-          .catch(error => {
-            console.log(error);
-          }); */
+        }).then(response => this.getData(), this.handleCancel2());
       }
     });
   };
@@ -214,7 +157,7 @@ class DashboardPage extends React.Component {
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
   };
 
-  compareToFirstPassword = (/* rule,  */ value, callback) => {
+  compareToFirstPassword = (value, callback) => {
     const form = this.props.form;
     if (value && value !== form.getFieldValue("password")) {
       callback("Two passwords that you enter is inconsistent!");
@@ -223,19 +166,35 @@ class DashboardPage extends React.Component {
     }
   };
 
-  validateToNextPassword = (/* rule,  */ value, callback) => {
+  validateToNextPassword = (value, callback) => {
     const form = this.props.form;
     if (value && this.state.confirmDirty) {
       form.validateFields(["confirm"], { force: true });
     }
     callback();
   };
-  rowSelection = {
-    onChange: (/* selectedRowKeys, */ selectedRows) => {
+
+  /* rowSelection = {
+    onChange: selectedRows => {
+      console.log("haha", selectedRows);
       this.setState({ editData: selectedRows[0] });
     },
     getCheckboxProps: record => ({
       disabled: record.name === "Disabled User",
+      name: record.name
+    })
+  }; */
+  rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows
+      );
+      this.setState({ editData: selectedRows[0] });
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === "Disabled User", // Column configuration not to be checked
       name: record.name
     })
   };
@@ -254,19 +213,13 @@ class DashboardPage extends React.Component {
   };
 
   realqty = e => {
-    console.log("ede");
     let tmp = this.state.editData;
     tmp.realqty = e.target.value;
     this.setState({ editData: tmp });
   };
   render() {
     const { previewVisible, previewImage, fileList } = this.state;
-    const {
-      getFieldDecorator
-      /* getFieldsError, */
-      /* getFieldError,
-      isFieldTouched */
-    } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     const uploadButton = (
       <div>
         <Icon type="plus" />
@@ -283,23 +236,6 @@ class DashboardPage extends React.Component {
         sm: { span: 16 }
       }
     };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0
-        },
-        sm: {
-          span: 16,
-          offset: 8
-        }
-      }
-    };
-    /* const userNameError =
-      isFieldTouched("userName") && getFieldError("userName");
-    const passwordError =
-      isFieldTouched("password") && getFieldError("password");
- */
     return (
       <div style={{ padding: "20px" }}>
         <Button
@@ -313,6 +249,7 @@ class DashboardPage extends React.Component {
           type="dashed"
           onClick={this.showModal1}
           style={{ marginBottom: "20px" }}
+          disabled
         >
           Бараа засах
         </Button>
@@ -388,7 +325,7 @@ class DashboardPage extends React.Component {
               })(<Input />)}
             </Form.Item>
 
-            <Form.Item label="imgnm" style={{ width: "100%", float: "left" }}>
+            <Form.Item label="imgnm" style={{ width: "45%", float: "left" }}>
               <div className="clearfix">
                 <Upload
                   action="//jsonplaceholder.typicode.com/posts/"
@@ -437,10 +374,7 @@ class DashboardPage extends React.Component {
               <Input value={this.state.editData.price} />
             </Form.Item>
             <Form.Item label="realqty" style={{ width: "45%", float: "left" }}>
-              <Input
-                defaultValue={this.state.editData.realqty}
-                /* onChange={e => this.realqty(e)} */
-              />
+              <Input defaultValue={this.state.editData.realqty} />
             </Form.Item>
             <Form.Item label="status" style={{ width: "45%", float: "left" }}>
               <Input value={this.state.editData.status} />

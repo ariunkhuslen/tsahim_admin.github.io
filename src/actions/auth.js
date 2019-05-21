@@ -11,12 +11,18 @@ export const userLoggedOut = () => ({
   type: USER_LOGGED_OUT
 });
 
-export const login = credentials => dispatch =>
-  api.user.login(credentials).then(user => {
+export const login = credentials => {
+  fetch(URL + `user/loginUser`, {
+    method: "POST",
+    body: credentials
+  }).then(response => console.log(response.json()));
+};
+
+/* api.user.login(credentials).then(user => {
     localStorage.bookwormJWT = user.token;
     setAuthorizationHeader(user.token);
     dispatch(userLoggedIn(user));
-  });
+  }); */
 
 export const logout = () => dispatch => {
   localStorage.removeItem("bookwormJWT");

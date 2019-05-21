@@ -3,8 +3,8 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { Form, Divider, Modal } from "antd";
 /* import { Link } from "react-router-dom"; */
-const URL = "http://10.3.133.232:6001/";
-const { Column/* , ColumnGroup */ } = Table;
+const URL = "http://192.168.137.1:6001/";
+const { Column /* , ColumnGroup */ } = Table;
 /* const formatter = new Int16Array.NumberFormat("en-US"); */
 const columns = [
   {
@@ -162,7 +162,7 @@ class DashboardPage extends React.Component {
         </Table>
         <Modal
           width="800px"
-          title="Title"
+          title="Дэлгэрэнгүй"
           visible={this.state.visible}
           onOk={this.handleOk}
           confirmLoading={this.state.confirmLoading}
