@@ -1,20 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { /* Route, */ Link } from "react-router-dom";
-/* import HomePage from "./components/pages/HomePage"; */
+import { Link } from "react-router-dom";
 import LoginPage from "./components/pages/LoginPage";
 import DashboardPage from "./components/pages/DashboardPage";
+import BrandPage from "./components/pages/BrandPage";
 import SignupPage from "./components/pages/SignupPage";
-/* import UserRoute from "./components/routes/UserRoute"; */
 import GuestRoute from "./components/routes/GuestRoute";
-/* import TopNavigation from "./components/navigation/TopNavigation"; */
 import realHomePage from "./components/pages/realHomePage";
 import Agree from "./components/pages/agree";
 import { Layout, Menu /* , Breadcrumb */ } from "antd";
 
 const { Header, Content, Footer } = Layout;
-const App = ({ location /*  isAuthenticated */ }) => (
+const App = ({ location }) => (
   <div>
     {/* <Route location={location} path="/" exact component={LoginPage} /> */}
     {
@@ -28,10 +26,13 @@ const App = ({ location /*  isAuthenticated */ }) => (
             style={{ lineHeight: "64px" }}
           >
             <Menu.Item key="1">
-              <Link to="/dashboard">Бараа</Link>
+              <Link to="/product">Бараа</Link>
             </Menu.Item>
             <Menu.Item key="2">
-              <Link to="/agree">Захиалга</Link>
+              <Link to="/order">Захиалга</Link>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <Link to="/brand">Бранд бүртгэх</Link>
             </Menu.Item>
           </Menu>
         </Header>
@@ -53,7 +54,7 @@ const App = ({ location /*  isAuthenticated */ }) => (
             />
             <GuestRoute
               location={location}
-              path="/dashboard"
+              path="/product"
               exact
               component={DashboardPage}
             />
@@ -65,9 +66,15 @@ const App = ({ location /*  isAuthenticated */ }) => (
             />
             <GuestRoute
               location={location}
-              path="/agree"
+              path="/order"
               exact
               component={Agree}
+            />
+             <GuestRoute
+              location={location}
+              path="/brand"
+              exact
+              component={BrandPage}
             />
           </div>
         </Content>
@@ -91,28 +98,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(App);
-
-/* <div className="ui container">
-    <TopNavigation />
-    <Route location={location} path="/" exact component={HomePage} />
-    <GuestRoute location={location} path="/login" exact component={LoginPage} />
-    <GuestRoute
-      location={location}
-      path="/signup"
-      exact
-      component={SignupPage}
-    />
-    <GuestRoute
-      location={location}
-      path="/dashboard"
-      exact
-      component={DashboardPage}
-    />
-    <GuestRoute
-      location={location}
-      path="/realHomePage"
-      exact
-      component={realHomePage}
-    />
-    <GuestRoute location={location} path="/agree" exact component={Agree} />
-  </div> */
