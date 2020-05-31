@@ -30,7 +30,8 @@ class BrandPage extends React.Component {
       visible1: false,
       previewVisible: false,
       previewImage: "",
-      fileList: []
+      fileList: [],
+      actionType: ''
     };
     this.columns = [
       {
@@ -66,6 +67,7 @@ class BrandPage extends React.Component {
 
   showModal = () => {
     this.setState({
+      actionType: 'new',
       editData: [],
       visible2: true
     });
@@ -80,6 +82,7 @@ class BrandPage extends React.Component {
         this.setState({ data: myJson.data });
       });
   }
+
   componentWillMount() {
     this.getData();
   }
@@ -107,6 +110,7 @@ class BrandPage extends React.Component {
         }
         else
         {
+          if(this.state.actionType == 'new' || this.state.actionType == 'edit')
           var formData = new FormData();
           formData.append("brandnm", values.brandnm);
           for (let i = 0; i < this.state.fileList.length; i++) {
@@ -137,14 +141,8 @@ class BrandPage extends React.Component {
     this.setState({ fileList });
   };
 
-  realqty = e => {
-    let tmp = this.state.editData;
-    tmp.realqty = e.target.value;
-    this.setState({ editData: tmp });
-  };
-
   rowDoubleclick = (record, rowIndex) => {
-    this.setState({ editData: record, visible2: true });
+    this.setState({ actionType: 'edit', editData: record, visible2: true });
   }
 
   clickCell = (record, e) => {
