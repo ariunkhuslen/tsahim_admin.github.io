@@ -50,7 +50,7 @@ class DashboardPage extends React.Component {
 
   setData() {
     fetch(URL + "order/getOrders")
-      .then(function(response) {
+      .then(function (response) {
         return response.json();
       })
       .then(myJson => {
@@ -96,7 +96,7 @@ class DashboardPage extends React.Component {
 
   showModal = (e, record) => {
     fetch(URL + "order/getOrderDetail/" + record.ord_no)
-      .then(function(response) {
+      .then(function (response) {
         return response.json();
       })
       .then(myJson => {
@@ -128,7 +128,7 @@ class DashboardPage extends React.Component {
 
   render() {
     return (
-      <div style={{ padding: "50px" }}>
+      <div style={{ padding: "20px" }}>
         <Table
           rowSelection={this.rowSelection}
           dataSource={this.state.data}
@@ -152,8 +152,8 @@ class DashboardPage extends React.Component {
                 {record.ord_type === "0" ? (
                   <a onClick={e => this.onAgree(e, record)}>Батлах</a>
                 ) : (
-                  <a onClick={e => this.onDisAgree(e, record)}>Цуцлах</a>
-                )}
+                    <a onClick={e => this.onDisAgree(e, record)}>Цуцлах</a>
+                  )}
                 <Divider type="vertical" />
                 {<a onClick={e => this.showModal(e, record)}>Дэлгэрэнгүй</a>}
               </span>

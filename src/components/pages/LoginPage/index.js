@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 /* import PropTypes from "prop-types"; */
-import { login } from "../../actions/auth";
+import { login } from "../../../actions/auth";
 import { Form, Icon, Input, Button /* , Checkbox  */ } from "antd";
-import CryptoJS from "crypto-js";
+// import CryptoJS from "crypto-js";
 
 class LoginPage extends React.Component {
   state = {
@@ -26,24 +26,46 @@ class LoginPage extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    let password1 = "" + CryptoJS.SHA256(this.refs.password.state.value);
+    // let password1 = "" + CryptoJS.SHA256(this.refs.password.state.value);
     let temp = {
-      username: this.refs.username.state.value,
-      password: password1
+      username: "ariunkhuslen",
+      password: "password1"
     };
     this.props.login(temp);
 
     /* this.props.login(); */
     /* this.props.login(temp) */
     /* this.props.history.push("/realHomePage"); */
-    console.log("yaag darsan", e.target);
-    console.log(this.props);
+    /* console.log("yaag darsan", e.target);
+    console.log(this.props); */
   };
 
   render() {
     return (
-      <div className="container" style={{ textAlign: "center" }}>
-        <div className="col-md-6" style={{ border: "1px solid black" }}>
+      <div className="container"
+        style={{
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative"
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "rgb(255, 255, 255)",
+            position: "absolute",
+            top: "50vh",
+            width: "45vh",
+            padding: "16px 32px",
+            top: "35vh",
+            borderRadius: "20px",
+          }}
+        >
           <h1>Login page</h1>
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Form.Item>

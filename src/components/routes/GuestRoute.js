@@ -10,8 +10,8 @@ const UserRoute = ({ isAuthenticated, component: Component, ...rest }) => (
       !isAuthenticated ? (
         <Component {...props} />
       ) : (
-        <Redirect to="/realHomePage" />
-      )}
+          <Redirect to="/realHomePage" />
+        )}
   />
 );
 
