@@ -129,6 +129,7 @@ class DashboardPage extends React.Component {
           return;
         }
         else {
+          console.log(values);
           var formData = new FormData();
           formData.append("skucd", values.skucd);
           formData.append("spice", values.spice);
@@ -141,10 +142,11 @@ class DashboardPage extends React.Component {
           formData.append("brandid", values.brandid);
           formData.append("catid", values.catid);
           formData.append("istop", values.istop);
+          formData.append("isnew", values.isnew);
           for (let i = 0; i < this.state.fileList.length; i++) {
             formData.append("files", this.state.fileList[i].originFileObj);
           }
-          fetch(URL + `product/addProduct`, {
+          fetch(API_URL + `/product/addProduct`, {
             method: "POST",
             body: formData
           }).then(response => {
@@ -325,6 +327,17 @@ class DashboardPage extends React.Component {
               <Form.Item label="Эрэлттэй бараа эсэх" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("istop", {
                   initialValue: this.state.editData.istop,
+                  rules: [{ required: false }]
+                })(
+                  <Select>
+                    <Option value="1">Тийм</Option>
+                    <Option value="0">Үгүй</Option>
+                  </Select>
+                )}
+              </Form.Item>
+              <Form.Item label="Шинэ бараа эсэх" style={{ width: "45%", float: "left" }}>
+                {getFieldDecorator("isnew", {
+                  initialValue: this.state.editData.isnew,
                   rules: [{ required: false }]
                 })(
                   <Select>
