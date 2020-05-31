@@ -12,20 +12,23 @@ export const userLoggedOut = () => ({
 });
 
 export const login = credentials => {
-  fetch(URL + `user/loginUser`, {
+  console.log("login", credentials);
+  setAuthorizationHeader(true);
+  /* fetch(URL + `user/loginUser`, {
     method: "POST",
     body: credentials
-  }).then(response => console.log(response.json()));
+  }).then(response => console.log(response.json())); */
 };
 
-/* api.user.login(credentials).then(user => {
-    localStorage.bookwormJWT = user.token;
-    setAuthorizationHeader(user.token);
-    dispatch(userLoggedIn(user));
-  }); */
+api.user.login().then(user => {
+  console.log(user);
+  /* localStorage.bookwormJWT = user.token;
+  setAuthorizationHeader(user.token);
+  dispatch(userLoggedIn(user)); */
+});
 
 export const logout = () => dispatch => {
-  localStorage.removeItem("bookwormJWT");
+  localStorage.removeItem("isAuthenticated");
   setAuthorizationHeader();
   dispatch(userLoggedOut());
 };
