@@ -126,9 +126,6 @@ class BrandPage extends React.Component {
                     let isEdit = edit === true ? "updateBanner" : "addBanner";
 
                     fetch(`${API_URL}/banner/${isEdit}`, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
                         method: "POST",
                         body: JSON.stringify(values)
                     }).then(response => {
