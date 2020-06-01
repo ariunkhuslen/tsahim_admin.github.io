@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Modal } from "antd";
 import "antd/dist/antd.css";
-import { Form, Input, Button, message, Popconfirm, Row } from "antd";
+import { Form, Input, Button, message, Popconfirm, Row, Upload } from "antd";
 
 import { API_URL } from "../../../../package.json";
 
@@ -106,15 +106,19 @@ class BrandPage extends React.Component {
 
 		this.props.form.validateFieldsAndScroll((err, values) => {
 			if (!err) {
+				const formData = new FormData();
+				formData.append("catnm", values.catnm);
+				formData.append("cattxt", values.cattxt);
+				for (let i = 0; i < this.state.fileList.length; i++) {
+					formData.append("files", this.state.fileList[i].originFileObj);
+				}
+
 				let isEdit = edit === true ? "updateCategory" : "addCategory";
-				if (edit) values.id = editData.id;
+				if (edit) formData.append("id", editData.id);
 
 				fetch(`${API_URL}/category/${isEdit}`, {
-					headers: {
-						'Content-Type': 'application/json'
-					},
 					method: "POST",
-					body: JSON.stringify(values)
+					body: formData
 				}).then(() => {
 					message.success("Амжилттай");
 					this.getData();
@@ -162,8 +166,13 @@ class BrandPage extends React.Component {
 	}
 
 	render() {
-		const { edit } = this.state;
+		const { previewVisible, previewImage, fileList, edit, editData } = this.state;
 		const { getFieldDecorator } = this.props.form;
+		const uploadButton = (
+            <div>
+                <img alt="upload_icon" src="https://img.icons8.com/cute-clipart/64/000000/add-camera.png" />
+            </div>
+        );
 		return (
 			<div style={{ padding: "20px" }}>
 				<Button
@@ -199,6 +208,34 @@ class BrandPage extends React.Component {
 									rules: [{ required: true, message: "Заавал бөглө!" }]
 								})(<Input />)}
 							</Form.Item>
+						</Form>
+						<Form layout="inline" {...formItemLayout}>
+						<Form.Item label="Категорын зураг" style={{ width: "45%", float: "left" }}>
+                                <div className="clearfix">
+                                    <Upload
+                                        action="//jsonplaceholder.typicode.com/posts/"
+                                        listType="picture-card"
+                                        fileList={fileList}
+                                        // onPreview={this.handlePreview}
+                                        onChange={this.handleChange}
+                                    >
+                                        {
+                                            edit === true ? <div><img alt="upload_icon" className="w-100" src={API_URL + "/uploads/" + editData.imgnm} /></div> : fileList.length >= 1 ? null : uploadButton
+                                        }
+                                    </Upload>
+                                    <Modal
+                                        visible={previewVisible}
+                                        footer={null}
+                                        onCancel={this.handleCancel}
+                                    >
+                                        <img
+                                            alt="example"
+                                            style={{ width: "100%" }}
+                                            src={previewImage}
+                                        />
+                                    </Modal>
+                                </div>
+                            </Form.Item>
 						</Form>
 					</Row>
 				</Modal>

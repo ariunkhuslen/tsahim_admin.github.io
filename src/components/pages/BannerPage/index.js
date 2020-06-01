@@ -119,9 +119,6 @@ class BrandPage extends React.Component {
                     if (edit) formData.append("id", editData.id);
 
                     fetch(`${API_URL}/banner/${isEdit}`, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
                         method: "POST",
                         body: formData
                     }).then(response => {
