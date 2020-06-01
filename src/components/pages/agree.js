@@ -3,7 +3,7 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { Form, Divider, Modal } from "antd";
 /* import { Link } from "react-router-dom"; */
-const URL = "http://192.168.137.1:6001/";
+import { API_URL } from "../../../package.json";
 const { Column /* , ColumnGroup */ } = Table;
 /* const formatter = new Int16Array.NumberFormat("en-US"); */
 const columns = [
@@ -49,7 +49,7 @@ class DashboardPage extends React.Component {
   };
 
   setData() {
-    fetch(URL + "order/getOrders")
+    fetch(API_URL + "/order/getOrders")
       .then(function (response) {
         return response.json();
       })
@@ -63,7 +63,7 @@ class DashboardPage extends React.Component {
   }
 
   onAgree(e, record) {
-    var url = URL + "order/approveOrder/" + record.id;
+    var url = API_URL + "/order/approveOrder/" + record.id;
     fetch(url, {
       method: "PUT",
       headers: {
@@ -79,7 +79,7 @@ class DashboardPage extends React.Component {
   }
 
   onDisAgree(e, record) {
-    var url = URL + "order/unApproveOrder/" + record.id;
+    var url = API_URL + "/order/unApproveOrder/" + record.id;
     fetch(url, {
       method: "PUT",
       headers: {
@@ -95,7 +95,7 @@ class DashboardPage extends React.Component {
   }
 
   showModal = (e, record) => {
-    fetch(URL + "order/getOrderDetail/" + record.ord_no)
+    fetch(API_URL + "/order/getOrderDetail/" + record.ord_no)
       .then(function (response) {
         return response.json();
       })
@@ -149,7 +149,7 @@ class DashboardPage extends React.Component {
             key="action"
             render={(text, record) => (
               <span>
-                {record.ord_type === "0" ? (
+                {record.ord_type === 0 ? (
                   <a onClick={e => this.onAgree(e, record)}>Батлах</a>
                 ) : (
                     <a onClick={e => this.onDisAgree(e, record)}>Цуцлах</a>

@@ -111,21 +111,27 @@ class BrandPage extends React.Component {
                     const formData = new FormData();
                     formData.append("link", values.link);
                     formData.append("isenable", values.isenable === false ? 0 : 1);
-                    for (let i = 0; i < this.state.fileList.length; i++) {
-                        formData.append("files", this.state.fileList[i].originFileObj);
+                    if (edit) {
+                        values.id = editData.id;
+                        values.files = this.state.editData.imgnm;
+                        values.isenable = values.isenable === false ? 0 : 1;
+                        formData.append("files", this.state.editData.imgnm);
+                        formData.append("id", editData.id);
+                    } else {
+                        for (let i = 0; i < this.state.fileList.length; i++) {
+                            formData.append("files", this.state.fileList[i].originFileObj);
+                        }
                     }
 
                     let isEdit = edit === true ? "updateBanner" : "addBanner";
-                    if (edit) formData.append("id", editData.id);
 
                     fetch(`${API_URL}/banner/${isEdit}`, {
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         method: "POST",
-                        body: formData
+                        body: JSON.stringify(values)
                     }).then(response => {
-                        message.success("Амжилттай");
                         this.getData();
                         this.handleCancel2();
                         this.props.form.resetFields();

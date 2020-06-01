@@ -105,12 +105,16 @@ class BrandPage extends React.Component {
         else {
           const formData = new FormData();
           formData.append("brandnm", values.brandnm);
-          for (let i = 0; i < this.state.fileList.length; i++) {
-            formData.append("files", this.state.fileList[i].originFileObj);
+          if (edit) {
+            formData.append("id", editData.brandid);
+            formData.append("files", this.state.editData.imgnm);
+          } else {
+            for (let i = 0; i < this.state.fileList.length; i++) {
+              formData.append("files", this.state.fileList[i].originFileObj);
+            }
           }
 
           let isEdit = edit === true ? "updateBrand" : "addBrand";
-          if (edit) formData.append("id", editData.brandid);
 
           fetch(`${API_URL}/brand/${isEdit}`, {
             method: "POST",

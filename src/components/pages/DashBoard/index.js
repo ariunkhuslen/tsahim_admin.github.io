@@ -147,11 +147,8 @@ class DashboardPage extends React.Component {
           formData.append("istop", values.istop);
           formData.append("isnew", values.isnew);
           if (edit) {
-            if (this.state.fileList.length !== 0) {
-              for (let i = 0; i < this.state.fileList.length; i++) {
-                formData.append("files", this.state.fileList[i].originFileObj);
-              }
-            }
+            formData.append("id", this.state.editData.id);
+            formData.append("filename", this.state.editData.imgnm);
           } else {
             for (let i = 0; i < this.state.fileList.length; i++) {
               formData.append("files", this.state.fileList[i].originFileObj);
@@ -168,7 +165,6 @@ class DashboardPage extends React.Component {
             this.handleCancel2();
             this.props.form.resetFields();
           });
-          console.log(values);
         }
       }
     });
