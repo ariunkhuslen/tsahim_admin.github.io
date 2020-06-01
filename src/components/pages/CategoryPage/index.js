@@ -109,8 +109,13 @@ class BrandPage extends React.Component {
 				const formData = new FormData();
 				formData.append("catnm", values.catnm);
 				formData.append("cattxt", values.cattxt);
-				for (let i = 0; i < this.state.fileList.length; i++) {
-					formData.append("files", this.state.fileList[i].originFileObj);
+				if (edit) {
+					formData.append("files", this.state.editData.imgnm);
+					formData.append("id", editData.id);
+				} else {
+					for (let i = 0; i < this.state.fileList.length; i++) {
+						formData.append("files", this.state.fileList[i].originFileObj);
+					}
 				}
 
 				let isEdit = edit === true ? "updateCategory" : "addCategory";
