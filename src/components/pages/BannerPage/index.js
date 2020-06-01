@@ -110,7 +110,7 @@ class BrandPage extends React.Component {
                 else {
                     const formData = new FormData();
                     formData.append("link", values.link);
-                    formData.append("isenable", values.isenable === true ? 0 : 1);
+                    formData.append("isenable", values.isenable === false ? 0 : 1);
                     for (let i = 0; i < this.state.fileList.length; i++) {
                         formData.append("files", this.state.fileList[i].originFileObj);
                     }
@@ -119,6 +119,9 @@ class BrandPage extends React.Component {
                     if (edit) formData.append("id", editData.id);
 
                     fetch(`${API_URL}/banner/${isEdit}`, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
                         method: "POST",
                         body: formData
                     }).then(response => {
@@ -158,14 +161,12 @@ class BrandPage extends React.Component {
     }
 
     clickCell = (record, e) => {
-        fetch(`${API_URL}/brand/deleteBrand/${record.brandid}`, {
+        fetch(`${API_URL}/banner/deleteBanner/${record.id}`, {
             method: 'DELETE',
         }).then(response => response.json())
             .then(data =>
-                console.log(data)
-                // this.setState({ data: data.data })
+                this.getData()
             );
-        console.log(record);
     }
 
     render() {
