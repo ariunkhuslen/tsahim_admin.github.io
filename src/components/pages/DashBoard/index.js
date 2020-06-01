@@ -34,6 +34,7 @@ class DashboardPage extends React.Component {
       fileList: [],
       color: [],
       category: [],
+      edit: false,
     };
     this.columns = [
       {
@@ -85,7 +86,8 @@ class DashboardPage extends React.Component {
   showModal = () => {
     this.setState({
       editData: [],
-      visible2: true
+      visible2: true,
+      edit: false
     });
   };
 
@@ -115,6 +117,7 @@ class DashboardPage extends React.Component {
   };
 
   handleCancel2 = () => {
+    this.props.form.resetFields();
     this.setState({
       visible2: false
     });
@@ -122,14 +125,14 @@ class DashboardPage extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    const { edit } = this.state;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        if (this.state.fileList.length === 0) {
+        if (this.state.fileList.length === 0 && !edit) {
           message.error("Барааны зураг оруулна уу.");
           return;
         }
         else {
-          console.log(values);
           var formData = new FormData();
           formData.append("skucd", values.skucd);
           formData.append("spice", values.spice);
@@ -143,16 +146,29 @@ class DashboardPage extends React.Component {
           formData.append("catid", values.catid);
           formData.append("istop", values.istop);
           formData.append("isnew", values.isnew);
-          for (let i = 0; i < this.state.fileList.length; i++) {
-            formData.append("files", this.state.fileList[i].originFileObj);
+          if (edit) {
+            if (this.state.fileList.length !== 0) {
+              for (let i = 0; i < this.state.fileList.length; i++) {
+                formData.append("files", this.state.fileList[i].originFileObj);
+              }
+            }
+          } else {
+            for (let i = 0; i < this.state.fileList.length; i++) {
+              formData.append("files", this.state.fileList[i].originFileObj);
+            }
           }
-          fetch(API_URL + `/product/addProduct`, {
+
+          let isEdit = edit === true ? "updateProduct" : "addProduct";
+
+          fetch(API_URL + `/product/${isEdit}`, {
             method: "POST",
             body: formData
           }).then(response => {
             this.getData();
             this.handleCancel2();
+            this.props.form.resetFields();
           });
+          console.log(values);
         }
       }
     });
@@ -178,7 +194,7 @@ class DashboardPage extends React.Component {
   };
 
   rowDoubleclick = (record, rowIndex) => {
-    this.setState({ editData: record, visible2: true });
+    this.setState({ editData: record, visible2: true, edit: true });
   }
 
   clickCell = (record, e) => {
@@ -356,7 +372,9 @@ class DashboardPage extends React.Component {
                     onPreview={this.handlePreview}
                     onChange={this.handleChange}
                   >
-                    {fileList.length >= 3 ? null : uploadButton}
+                    {
+                      uploadButton
+                    }
                   </Upload>
                   <Modal
                     visible={previewVisible}

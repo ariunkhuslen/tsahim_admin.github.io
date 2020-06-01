@@ -116,6 +116,7 @@ class BrandPage extends React.Component {
 					},
 					method: "POST",
 					body: JSON.stringify(values)
+
 				}).then(() => {
 					message.success("Амжилттай");
 					this.getData();
