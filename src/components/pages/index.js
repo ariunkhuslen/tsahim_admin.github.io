@@ -4,6 +4,8 @@ import ColorPage from "./ColorPage";
 import CategoryPage from "./CategoryPage";
 import DashBoard from "./DashBoard";
 import BannerPage from "./BannerPage";
+import NewAdminModal from "./NewAdminModal";
+import AdminPage from "./AdminPage";
 
 export {
 	LoginPage,
@@ -12,4 +14,6 @@ export {
 	CategoryPage,
 	DashBoard,
 	BannerPage,
+	NewAdminModal,
+	AdminPage,
 };

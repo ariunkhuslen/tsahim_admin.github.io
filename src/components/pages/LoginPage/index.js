@@ -2,7 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 /* import PropTypes from "prop-types"; */
 import { login } from "../../../actions/auth";
-import { Form, Icon, Input, Button /* , Checkbox  */ } from "antd";
+import { Form, Icon, Input, Button, /* , Checkbox  */ 
+message} from "antd";
+import { API_URL } from "../../../../package.json";
 // import CryptoJS from "crypto-js";
 
 class LoginPage extends React.Component {
@@ -14,11 +16,6 @@ class LoginPage extends React.Component {
     loading: false,
     errors: {}
   };
-  onSubmit = data => {
-    this.props.history.push("/realHomePage");
-
-    console.log(this.props);
-  };
   onChange = e =>
     this.setState({
       data: { ...this.state.data, [e.target.name]: e.target.value }
@@ -26,18 +23,42 @@ class LoginPage extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    // let password1 = "" + CryptoJS.SHA256(this.refs.password.state.value);
-    let temp = {
-      username: "ariunkhuslen",
-      password: "password1"
-    };
-    this.props.login(temp);
-
-    /* this.props.login(); */
-    /* this.props.login(temp) */
-    /* this.props.history.push("/realHomePage"); */
-    /* console.log("yaag darsan", e.target);
-    console.log(this.props); */
+    if(this.refs.username.state.value != undefined && this.refs.password.state.value != undefined && this.refs.username.state.value != "" && this.refs.password.state.value != "")
+    {
+      this.setState({ loading: true });
+      let tmp = {
+        email: this.refs.username.state.value,
+        password: this.refs.password.state.value
+      }
+      fetch(`${API_URL}/admin/loginAdmin`, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify(tmp)
+  
+      }).then(response => response.json())
+      .then(data => {
+        if(data.success)
+        {
+          message.success(data.message);
+          localStorage.setItem("isLogged", true);
+          localStorage.setItem("userData", data[0]);
+          this.refs.username.state.value = "";
+          this.refs.password.state.value = "";
+          this.setState({ loading: false });
+          this.props.history.push("/admin");
+        }
+        else
+        {
+          message.error(data.message);
+        }
+      });
+    }
+    else
+    {
+      message.error("Нэвтрэх нэр нууц үг оруулна уу.");
+    }
   };
 
   render() {
@@ -66,14 +87,14 @@ class LoginPage extends React.Component {
             borderRadius: "20px",
           }}
         >
-          <h1>Login page</h1>
+          <h1>Amarshop.mn <br/> Нэвтрэх хэсэг</h1>
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Form.Item>
               <Input
                 prefix={
                   <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
                 }
-                placeholder="Username"
+                placeholder="Имэйл хаяг"
                 name="username"
                 ref="username"
               />
@@ -83,10 +104,10 @@ class LoginPage extends React.Component {
                 prefix={
                   <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
                 }
+                type="password"
+                placeholder="Нууц үг"
                 name="password"
                 ref="password"
-                type="password"
-                placeholder="Password"
               />
             </Form.Item>
             <Form.Item>
@@ -95,10 +116,11 @@ class LoginPage extends React.Component {
                 htmlType="submit"
                 className="login-form-button"
                 block
+                disabled={this.state.loading}
+                loading={this.state.loading}
               >
-                Log in
+                Нэвтрэх
               </Button>
-              <br /> Or <a href="">register now!</a>
             </Form.Item>
           </Form>
         </div>

@@ -160,9 +160,7 @@ class BrandPage extends React.Component {
     }).then(response => response.json())
       .then(data =>
         console.log(data)
-        // this.setState({ data: data.data })
       );
-    console.log(record);
   }
 
   render() {

@@ -13,19 +13,19 @@ export const userLoggedOut = () => ({
 
 export const login = credentials => {
   console.log("login", credentials);
-  setAuthorizationHeader(true);
+  // setAuthorizationHeader(true);
   /* fetch(URL + `user/loginUser`, {
     method: "POST",
     body: credentials
   }).then(response => console.log(response.json())); */
 };
 
-api.user.login().then(user => {
+/*api.user.login().then(user => {
   console.log(user);
-  /* localStorage.bookwormJWT = user.token;
+  localStorage.bookwormJWT = user.token;
   setAuthorizationHeader(user.token);
-  dispatch(userLoggedIn(user)); */
-});
+  dispatch(userLoggedIn(user)); 
+});*/
 
 export const logout = () => dispatch => {
   localStorage.removeItem("isAuthenticated");
