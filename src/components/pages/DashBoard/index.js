@@ -84,6 +84,7 @@ class DashboardPage extends React.Component {
 
 
   showModal = () => {
+    console.log("tests")
     this.setState({
       editData: [],
       visible2: true,
@@ -200,7 +201,7 @@ class DashboardPage extends React.Component {
   renderColor = () => {
     try {
       const { color } = this.state;
-      return color.length === 0 ? <Select.Option disabled>Хоосон</Select.Option> : color.map((item, key) => (<Select.Option value={item.id} key={key}>{item.colornm}</Select.Option>));
+      return color.length === 0 ? <Select.Option disabled key={0}>Хоосон</Select.Option> : color.map((item, key) => (<Select.Option value={item.id} key={key}>{item.colornm}</Select.Option>));
     } catch (error) {
       return console.log(error);
     }
@@ -209,7 +210,7 @@ class DashboardPage extends React.Component {
   renderBrand = () => {
     try {
       const { brand } = this.state;
-      return brand.length === 0 ? <Select.Option disabled>Хоосон</Select.Option> : brand.map((item, key) => (<Select.Option value={item.brandid} key={key}>{item.brandnm}</Select.Option>));
+      return brand.length === 0 ? <Select.Option disabled key={0}>Хоосон</Select.Option> : brand.map((item, key) => (<Select.Option value={item.brandid} key={key}>{item.brandnm}</Select.Option>));
     } catch (error) {
       return console.log(error);
     }
@@ -218,10 +219,21 @@ class DashboardPage extends React.Component {
   renderCategory = () => {
     try {
       const { category } = this.state;
-      return category.length === 0 ? <Select.Option disabled>Хоосон</Select.Option> : category.map((item, key) => (<Select.Option value={item.id} key={key}>{item.catnm}</Select.Option>));
+      return category.length === 0 ? <Select.Option disabled key={0}>Хоосон</Select.Option> : category.map((item, key) => (<Select.Option value={item.id} key={key}>{item.catnm}</Select.Option>));
     } catch (error) {
       return console.log(error);
     }
+  }
+
+  checkValues = (values) => {
+    try{
+      if(values === undefined)
+        return "";
+      return values;
+    } catch (error) {
+      return console.log(error);
+    }
+
   }
 
   render() {
@@ -233,6 +245,8 @@ class DashboardPage extends React.Component {
         <div className="ant-upload-text">Зураг оруулах</div>
       </div>
     );
+
+    console.log(this.state.editData.skucd)
     return (
       <div style={{ padding: "20px" }}>
         <Button
@@ -258,37 +272,37 @@ class DashboardPage extends React.Component {
             <Form layout="inline" {...formItemLayout}>
               <Form.Item label="Барааны код" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("skucd", {
-                  initialValue: this.state.editData.skucd,
+                  initialValue: this.checkValues(this.state.editData.skucd),
                   rules: [{ required: true, message: "Заавал бөглө!" }]
                 })(<Input />)}
               </Form.Item>
               <Form.Item label="Барааны нэр" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("skunm", {
-                  initialValue: this.state.editData.skunm,
+                  initialValue: this.checkValues(this.state.editData.skunm),
                   rules: [{ required: true, message: "Барааны нэр заавал оруулна уу." }]
                 })(<Input />)}
               </Form.Item>
               <Form.Item label="Барааны үнэ" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("price", {
-                  initialValue: this.state.editData.price,
+                  initialValue: this.checkValues(this.state.editData.price),
                   rules: [{ required: true, message: "Барааны үнэ заавал оруулна уу!" }]
                 })(<Input />)}
               </Form.Item>
               <Form.Item label="Хямдралтай үнэ" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("spice", {
-                  initialValue: this.state.editData.spice,
+                  initialValue: this.checkValues(this.state.editData.spice),
                   rules: [{ required: false }]
                 })(<Input />)}
               </Form.Item>
               <Form.Item label="Барааны үлдэгдэл" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("realqty", {
-                  initialValue: this.state.editData.realqty,
+                  initialValue: this.checkValues(this.state.editData.realqty),
                   rules: [{ required: false }]
                 })(<Input />)}
               </Form.Item>
               <Form.Item label="Барааны төлөв" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("status", {
-                  initialValue: this.state.editData.status,
+                  initialValue: this.state.editData.status === undefined ? "1" : this.state.editData.status,
                   rules: [{ required: true, message: "Барааны төлөв заавал оруулна уу." }]
                 })(
                   <Select >
@@ -302,13 +316,13 @@ class DashboardPage extends React.Component {
                 style={{ width: "45%", float: "left" }}
               >
                 {getFieldDecorator("featuretxt", {
-                  initialValue: this.state.editData.featuretxt,
+                  initialValue: this.checkValues(this.state.editData.featuretxt),
                   rules: [{ required: false }]
                 })(<Input />)}
               </Form.Item>
               <Form.Item label="Барааны өнгө" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("colorid", {
-                  initialValue: this.state.editData.colorid,
+                  initialValue: this.checkValues(this.state.editData.colorid),
                   rules: [{ required: false }]
                 })(
                   <Select placeholder="Өнгө сонгох" >
@@ -318,7 +332,7 @@ class DashboardPage extends React.Component {
               </Form.Item>
               <Form.Item label="Барааны бренд" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("brandid", {
-                  initialValue: this.state.editData.brandid,
+                  initialValue: this.checkValues(this.state.editData.brandid),
                   rules: [{ required: false }]
                 })(
                   <Select placeholder="Бренд сонгох" >
@@ -328,7 +342,7 @@ class DashboardPage extends React.Component {
               </Form.Item>
               <Form.Item label="Брааны категори" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("catid", {
-                  initialValue: this.state.editData.catid,
+                  initialValue: this.checkValues(this.state.editData.catid),
                   rules: [{ required: false }]
                 })(
                   <Select placeholder="Ангилал сонгох">
@@ -338,7 +352,7 @@ class DashboardPage extends React.Component {
               </Form.Item>
               <Form.Item label="Эрэлттэй бараа эсэх" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("istop", {
-                  initialValue: this.state.editData.istop,
+                  initialValue: this.checkValues(this.state.editData.istop),
                   rules: [{ required: false }]
                 })(
                   <Select>
@@ -349,7 +363,7 @@ class DashboardPage extends React.Component {
               </Form.Item>
               <Form.Item label="Шинэ бараа эсэх" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("isnew", {
-                  initialValue: this.state.editData.isnew,
+                  initialValue: this.checkValues(this.state.editData.isnew),
                   rules: [{ required: false }]
                 })(
                   <Select>

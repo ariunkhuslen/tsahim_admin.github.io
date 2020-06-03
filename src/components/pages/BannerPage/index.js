@@ -127,7 +127,7 @@ class BrandPage extends React.Component {
 
                     fetch(`${API_URL}/banner/${isEdit}`, {
                         method: "POST",
-                        body: JSON.stringify(values)
+                        body: edit ? JSON.stringify(values) : formData
                     }).then(response => {
                         this.getData();
                         this.handleCancel2();
