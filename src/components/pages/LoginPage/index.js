@@ -43,7 +43,7 @@ class LoginPage extends React.Component {
         {
           message.success(data.message);
           localStorage.setItem("isLogged", true);
-          localStorage.setItem("userData", data[0]);
+          localStorage.setItem("userData", JSON.stringify(data.data[0]));
           this.refs.username.state.value = "";
           this.refs.password.state.value = "";
           this.setState({ loading: false });
@@ -53,6 +53,7 @@ class LoginPage extends React.Component {
         {
           message.error(data.message);
         }
+        this.setState({ loading: false });
       });
     }
     else

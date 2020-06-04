@@ -17,6 +17,7 @@ class NewAdminModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+		loading: false
     };
 	}
 	
@@ -25,6 +26,7 @@ class NewAdminModal extends React.Component {
 			if (!err) {
 				if(values.password === values.repassword)
 				{
+					this.setState({ loading: true });
 					fetch(`${API_URL}/admin/addAdmin`, {
 						headers: {
 							'Content-Type': 'application/json'
@@ -44,6 +46,7 @@ class NewAdminModal extends React.Component {
 						{
 							message.error(data.message);
 						}
+						this.setState({ loading: false });
 					});
 				}
 				else
@@ -59,12 +62,17 @@ class NewAdminModal extends React.Component {
 	}
 
   render() {
-    const { getFieldDecorator } = this.props.form;
+	const { getFieldDecorator } = this.props.form;
+	const { loading } = this.state;
     return (
         <Modal
         title="Админ бүртгэх"
-        visible={this.props.visible}
-        onOk={this.handleOk}
+		visible={this.props.visible}
+		footer={[
+            <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+              Хадгалах
+            </Button>
+        ]}
         onCancel={this.handleCancel}
       >
         <Row>

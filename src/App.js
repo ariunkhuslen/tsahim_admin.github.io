@@ -61,6 +61,53 @@ class App extends Component {
     this.props.history.push("/");
   }
 
+  getUserData = () => {
+    if(localStorage.getItem("userData") == undefined || localStorage.getItem("userData") == null || localStorage.getItem("userData") == "undefined")
+    {
+      return "";
+    }
+    return JSON.parse(localStorage.getItem("userData"));
+  }
+
+  checkMenus = (name, path, adminType, isRight) => {
+    let user = this.getUserData();
+    if(user == "")
+    {
+      return;
+    }
+
+    if(user.adminType == adminType)
+    { 
+      return (
+        <Menu.Item key={name} style={ isRight ? {float: 'right' } : ''}>
+          <Link to={path}>{name}</Link>
+        </Menu.Item>
+      )
+    }
+    return null;
+  }
+
+  checkRoutes = (location, path, adminType, compon) => {
+    let user = this.getUserData();
+    if(user == "")
+    {
+      return;
+    }
+
+    if(user.adminType == adminType)
+    { 
+      return (
+        <GuestRoute
+          location={location}
+          path={path}
+          exact
+          component={compon}
+        />
+      )
+    }
+    return null;
+  }
+
   renderRoutes = () => {
     const { location } = this.props;
     if(this.getIsLogged() != null && this.getIsLogged() == "true")
@@ -76,93 +123,33 @@ class App extends Component {
                   // defaultSelectedKeys={[location]}
                   style={{ lineHeight: "64px" }}
                 >
-                  <Menu.Item key="product">
-                    <Link to="/product">Бараа</Link>
-                  </Menu.Item>
-                  <Menu.Item key="order">
-                    <Link to="/order">Захиалга</Link>
-                  </Menu.Item>
-                  <Menu.Item key="brand">
-                    <Link to="/brand">Бранд бүртгэх</Link>
-                  </Menu.Item>
-                  <Menu.Item key="color">
-                    <Link to="/color">Өнгө бүртгэх</Link>
-                  </Menu.Item>
-                  <Menu.Item key="category">
-                    <Link to="/category">Категори бүртгэх</Link>
-                  </Menu.Item>
-                  <Menu.Item key="banner">
-                    <Link to="/banner">Баннер бүртгэх</Link>
-                  </Menu.Item>
-                  <Menu.Item key="admins">
-                    <Link to="/admins">Админ жагсаалт</Link>
-                  </Menu.Item>
+                  {this.checkMenus("Бараа", "/product", 1)}
+                  {this.checkMenus("Захиалга", "/order", 1)}
+                  {this.checkMenus("Бранд бүртгэх", "/brand", 1)}
+                  {this.checkMenus("Өнгө бүртгэх", "/color", 1)}
+                  {this.checkMenus("Категори бүртгэх", "/category", 1)}
+                  {this.checkMenus("Баннер бүртгэх", "/banner", 1)}
+                  {this.checkMenus("Админ жагсаалт", "/admins", 1)}
+                  {this.checkMenus("Барааны хүсэлт", "/productRequest", 2)}
                   <Menu.Item key="exit" style={{ float: 'right' }}>
                     <li onClick={this.exitWeb}>Гарах</li>
                   </Menu.Item>
-                  <Menu.Item key="addAdmin" style={{ float: 'right' }}>
-                    <li onClick={() => this.setState({ visible: true })}>Амдин нэмэх</li>
-                  </Menu.Item>
+                  {this.checkMenus("Амдин нэмэх", "/addAdmin", 1, true)}
                 </Menu>
               </Header>
               <Content style={{ padding: "0 50px", marginTop: "100px" }}>
                 <div
                   style={{ background: "#fff", padding: "24px", height: "100%" }}
                 >
-                  <GuestRoute
-                    location={location}
-                    path="/signup"
-                    exact
-                    component={SignupPage}
-                  />
-                  <GuestRoute
-                    location={location}
-                    path="/product"
-                    exact
-                    component={DashBoard}
-                  />
-                  <GuestRoute
-                    location={location}
-                    path="/realHomePage"
-                    exact
-                    component={realHomePage}
-                  />
-                  <GuestRoute
-                    location={location}
-                    path="/order"
-                    exact
-                    component={Agree}
-                  />
-                  <GuestRoute
-                    location={location}
-                    path="/brand"
-                    exact
-                    component={BrandPage}
-                  />
-                  <GuestRoute
-                    location={location}
-                    path="/color"
-                    exact
-                    component={ColorPage}
-                  />
-                  <GuestRoute
-                    location={location}
-                    path="/category"
-                    exact
-                    component={CategoryPage}
-                  />
-                  <GuestRoute
-                    location={location}
-                    path="/banner"
-                    exact
-                    component={BannerPage}
-                  />
-                  <GuestRoute
-                    location={location}
-                    path="/admins"
-                    exact
-                    component={AdminPage}
-                  />
+                  {this.checkRoutes(location, "/signup", 1, SignupPage)}
+                  {this.checkRoutes(location, "/product", 1, DashBoard)}
+                  {this.checkRoutes(location, "/realHomePage", 1, realHomePage)}
+                  {this.checkRoutes(location, "/brand", 1, Agree)}
+                  {this.checkRoutes(location, "/color", 1, ColorPage)}
+                  {this.checkRoutes(location, "/category", 1, CategoryPage)}
+                  {this.checkRoutes(location, "/banner", 1, BannerPage)}
+                  {this.checkRoutes(location, "/admins", 1, AdminPage)}
+                  {this.checkRoutes(location, "/productRequest", 2, DashBoard)}
                 </div>
                 <NewAdminModal visible={this.state.visible} changeActionModal={this.changeModal} />
               </Content>
