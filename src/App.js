@@ -19,25 +19,26 @@ import {
   BannerPage,
   NewAdminModal,
   AdminPage,
+  China,
 } from "./components/pages";
 
 const { Header, Content, Footer } = Layout;
 const formItemLayout = {
   labelCol: {
-      xs: { span: 24 },
-      sm: { span: 8 }
+    xs: { span: 24 },
+    sm: { span: 8 }
   },
   wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 16 }
+    xs: { span: 24 },
+    sm: { span: 16 }
   }
 };
 
 class App extends Component {
-  state = { 
+  state = {
     isAuthenticated: false,
     visible: false,
-   }
+  }
 
   componentWillMount() {
     // console.log(this.props);
@@ -62,8 +63,7 @@ class App extends Component {
   }
 
   getUserData = () => {
-    if(localStorage.getItem("userData") == undefined || localStorage.getItem("userData") == null || localStorage.getItem("userData") == "undefined")
-    {
+    if (localStorage.getItem("userData") == undefined || localStorage.getItem("userData") == null || localStorage.getItem("userData") == "undefined") {
       return "";
     }
     return JSON.parse(localStorage.getItem("userData"));
@@ -71,15 +71,13 @@ class App extends Component {
 
   checkMenus = (name, path, adminType, isRight) => {
     let user = this.getUserData();
-    if(user == "")
-    {
+    if (user == "") {
       return;
     }
 
-    if(user.adminType == adminType)
-    { 
+    if (user.adminType == adminType) {
       return (
-        <Menu.Item key={name} style={ isRight ? {float: 'right' } : ''}>
+        <Menu.Item key={name} style={isRight ? { float: 'right' } : ''}>
           <Link to={path}>{name}</Link>
         </Menu.Item>
       )
@@ -89,13 +87,11 @@ class App extends Component {
 
   checkRoutes = (location, path, adminType, compon) => {
     let user = this.getUserData();
-    if(user == "")
-    {
+    if (user == "") {
       return;
     }
 
-    if(user.adminType == adminType)
-    { 
+    if (user.adminType == adminType) {
       return (
         <GuestRoute
           location={location}
@@ -110,66 +106,69 @@ class App extends Component {
 
   renderRoutes = () => {
     const { location } = this.props;
-    if(this.getIsLogged() != null && this.getIsLogged() == "true")
-    {
+    if (this.getIsLogged() != null && this.getIsLogged() == "true") {
       return (
         <div>
-            <Layout style={{ height: "100vh", position: "relative", width: "100%" }}>
-              <Header style={{ position: "fixed", zIndex: "1", width: "100%" }}>
-                <div className="logo" />
-                <Menu
-                  theme="dark"
-                  mode="horizontal"
-                  // defaultSelectedKeys={[location]}
-                  style={{ lineHeight: "64px" }}
-                >
-                  {this.checkMenus("Бараа", "/product", 1)}
-                  {this.checkMenus("Захиалга", "/order", 1)}
-                  {this.checkMenus("Бранд бүртгэх", "/brand", 1)}
-                  {this.checkMenus("Өнгө бүртгэх", "/color", 1)}
-                  {this.checkMenus("Категори бүртгэх", "/category", 1)}
-                  {this.checkMenus("Баннер бүртгэх", "/banner", 1)}
-                  {this.checkMenus("Админ жагсаалт", "/admins", 1)}
-                  {this.checkMenus("Барааны хүсэлт", "/productRequest", 2)}
-                  <Menu.Item key="exit" style={{ float: 'right' }}>
-                    <li onClick={this.exitWeb}>Гарах</li>
-                  </Menu.Item>
-                  {this.checkMenus("Амдин нэмэх", "/addAdmin", 1, true)}
-                </Menu>
-              </Header>
-              <Content style={{ padding: "0 50px", marginTop: "100px" }}>
-                <div
-                  style={{ background: "#fff", padding: "24px", height: "100%" }}
-                >
-                  {this.checkRoutes(location, "/signup", 1, SignupPage)}
-                  {this.checkRoutes(location, "/product", 1, DashBoard)}
-                  {this.checkRoutes(location, "/realHomePage", 1, realHomePage)}
-                  {this.checkRoutes(location, "/brand", 1, Agree)}
-                  {this.checkRoutes(location, "/color", 1, ColorPage)}
-                  {this.checkRoutes(location, "/category", 1, CategoryPage)}
-                  {this.checkRoutes(location, "/banner", 1, BannerPage)}
-                  {this.checkRoutes(location, "/admins", 1, AdminPage)}
-                  {this.checkRoutes(location, "/productRequest", 2, DashBoard)}
-                </div>
-                <NewAdminModal visible={this.state.visible} changeActionModal={this.changeModal} />
-              </Content>
-              <Footer style={{ textAlign: "center" }}>Created by Team1</Footer>
-            </Layout>
-          </div>
+          <Layout style={{ height: "100vh", position: "relative", width: "100%" }}>
+            <Header style={{ position: "fixed", zIndex: "1", width: "100%" }}>
+              <div className="logo" />
+              <Menu
+                theme="dark"
+                mode="horizontal"
+                // defaultSelectedKeys={[location]}
+                style={{ lineHeight: "64px" }}
+              >
+                {this.checkMenus("Бараа", "/product", 1)}
+                {this.checkMenus("Захиалга", "/order", 1)}
+                {this.checkMenus("Бранд бүртгэх", "/brand", 1)}
+                {this.checkMenus("Өнгө бүртгэх", "/color", 1)}
+                {this.checkMenus("Категори бүртгэх", "/category", 1)}
+                {this.checkMenus("Баннер бүртгэх", "/banner", 1)}
+                {this.checkMenus("Админ жагсаалт", "/admins", 1)}
+                {this.checkMenus("Барааны хүсэлт", "/productRequest", 2)}
+                <Menu.Item key="exit" style={{ float: 'right' }}>
+                  <li onClick={this.exitWeb}>Гарах</li>
+                </Menu.Item>
+                {this.checkMenus("Амдин нэмэх", "/addAdmin", 1, true)}
+              </Menu>
+            </Header>
+            <Content style={{ padding: "0 50px", marginTop: "100px" }}>
+              <div
+                style={{ background: "#fff", padding: "24px", height: "100%" }}
+              >
+                {this.checkRoutes(location, "/signup", 1, SignupPage)}
+                {this.checkRoutes(location, "/product", 1, DashBoard)}
+                {this.checkRoutes(location, "/realHomePage", 1, realHomePage)}
+                {this.checkRoutes(location, "/brand", 1, Agree)}
+                {this.checkRoutes(location, "/color", 1, ColorPage)}
+                {this.checkRoutes(location, "/category", 1, CategoryPage)}
+                {this.checkRoutes(location, "/banner", 1, BannerPage)}
+                {this.checkRoutes(location, "/admins", 1, AdminPage)}
+                <GuestRoute
+                  location={location}
+                  path={"/productRequest"}
+                  exact
+                  component={China}
+                />
+              </div>
+              <NewAdminModal visible={this.state.visible} changeActionModal={this.changeModal} />
+            </Content>
+            <Footer style={{ textAlign: "center" }}>Created by Team1</Footer>
+          </Layout>
+        </div>
       )
     }
-    else
-    {
+    else {
       return (
         <GuestRoute
-        location={location}
-        path="*"
-        exact
-        component={LoginPage}
-      />
+          location={location}
+          path="*"
+          exact
+          component={LoginPage}
+        />
       )
     }
-  } 
+  }
 
   render() {
     return (

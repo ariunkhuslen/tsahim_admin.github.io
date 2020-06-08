@@ -6,6 +6,7 @@ import DashBoard from "./DashBoard";
 import BannerPage from "./BannerPage";
 import NewAdminModal from "./NewAdminModal";
 import AdminPage from "./AdminPage";
+import China from "./China";
 
 export {
 	LoginPage,
@@ -16,4 +17,5 @@ export {
 	BannerPage,
 	NewAdminModal,
 	AdminPage,
+	China,
 };

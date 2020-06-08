@@ -67,6 +67,7 @@ class BrandPage extends React.Component {
   componentWillMount() {
     this.getData();
   }
+
   getData() {
     fetch(`${API_URL}/brand/getAllBrand`)
       .then(response => response.json())

@@ -2,8 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 /* import PropTypes from "prop-types"; */
 import { login } from "../../../actions/auth";
-import { Form, Icon, Input, Button, /* , Checkbox  */ 
-message} from "antd";
+import {
+  Form, Icon, Input, Button, /* , Checkbox  */
+  message
+} from "antd";
 import { API_URL } from "../../../../package.json";
 // import CryptoJS from "crypto-js";
 
@@ -23,8 +25,7 @@ class LoginPage extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    if(this.refs.username.state.value != undefined && this.refs.password.state.value != undefined && this.refs.username.state.value != "" && this.refs.password.state.value != "")
-    {
+    if (this.refs.username.state.value != undefined && this.refs.password.state.value != undefined && this.refs.username.state.value != "" && this.refs.password.state.value != "") {
       this.setState({ loading: true });
       let tmp = {
         email: this.refs.username.state.value,
@@ -36,28 +37,25 @@ class LoginPage extends React.Component {
         },
         method: "POST",
         body: JSON.stringify(tmp)
-  
+
       }).then(response => response.json())
-      .then(data => {
-        if(data.success)
-        {
-          message.success(data.message);
-          localStorage.setItem("isLogged", true);
-          localStorage.setItem("userData", JSON.stringify(data.data[0]));
-          this.refs.username.state.value = "";
-          this.refs.password.state.value = "";
+        .then(data => {
+          if (data.success) {
+            message.success(data.message);
+            localStorage.setItem("isLogged", true);
+            localStorage.setItem("userData", JSON.stringify(data.data[0]));
+            this.refs.username.state.value = "";
+            this.refs.password.state.value = "";
+            this.setState({ loading: false });
+            this.props.history.push("/admin");
+          } else {
+            this.setState({ loading: false });
+            message.error(data.message);
+          }
           this.setState({ loading: false });
-          this.props.history.push("/admin");
-        }
-        else
-        {
-          message.error(data.message);
-        }
-        this.setState({ loading: false });
-      });
+        });
     }
-    else
-    {
+    else {
       message.error("Нэвтрэх нэр нууц үг оруулна уу.");
     }
   };
@@ -88,7 +86,7 @@ class LoginPage extends React.Component {
             borderRadius: "20px",
           }}
         >
-          <h1>Amarshop.mn <br/> Нэвтрэх хэсэг</h1>
+          <h1>Amarshop.mn <br /> Нэвтрэх хэсэг</h1>
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Form.Item>
               <Input
