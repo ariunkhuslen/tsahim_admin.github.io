@@ -2,8 +2,9 @@ import React from "react";
 import { Table, Modal } from "antd";
 import "antd/dist/antd.css";
 import { Form, Input, Button, message, Popconfirm, Row, Checkbox, Tabs, Select } from "antd";
-
+import ReactQuill from 'react-quill';
 import { API_URL } from "../../../../package.json";
+import 'react-quill/dist/quill.snow.css';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -29,7 +30,7 @@ class BrandPage extends React.Component {
 			data: [],
 			confirmDirty: false,
 			autoCompleteResult: [],
-			editData: [],
+			editData: "",
 			visible1: false,
 			previewVisible: false,
 			previewImage: "",
@@ -37,7 +38,32 @@ class BrandPage extends React.Component {
 			edit: false,
 			mainMenu: [],
 			type: "1",
+			text: "",
+			isEditType: null,
 		};
+		this.modules = {
+			toolbar: [
+				[{ header: [1, 2, false] }],
+				["bold", "italic", "underline", "strike", "blockquote"],
+				[{ list: "ordered" }, { list: "bullet" }],
+				["link", "image"]
+			]
+		};
+
+		this.formats = [
+			"header",
+			"bold",
+			"italic",
+			"underline",
+			"strike",
+			"blockquote",
+			"list",
+			"bullet",
+			"indent",
+			"link",
+			"image"
+		];
+
 		/* name, parentid, isenable, type, news */
 		this.columns = [
 			{
@@ -80,10 +106,18 @@ class BrandPage extends React.Component {
 		];
 	}
 
+	handleProcedureContentChange = (content, delta, source, editor) => {
+		this.setState({ text: content });
+		//let has_attribues = delta.ops[1].attributes || "";
+		//console.log(has_attribues);
+		//const cursorPosition = e.quill.getSelection().index;
+		// this.quill.insertText(cursorPosition, "★");
+		//this.quill.setSelection(cursorPosition + 1);
+	};
 
 	showModal = () => {
 		this.setState({
-			editData: [],
+			editData: "",
 			visible2: true,
 			edit: false,
 		});
@@ -114,7 +148,11 @@ class BrandPage extends React.Component {
 
 	handleCancel2 = () => {
 		this.setState({
-			visible2: false
+			visible2: false,
+			text: "",
+			editData: [],
+			isEditType: null,
+			type: "1",
 		});
 	};
 
@@ -127,11 +165,10 @@ class BrandPage extends React.Component {
 		const { edit, editData, type } = this.state;
 
 		this.props.form.validateFields((err, values) => {
-			console.log(type);
 			values.type = Number(type);
 			values.isenable = values.isenable === undefined ? 0 : 1;
 			values.parentid = Number(type) === 1 ? 0 : values.parentid;
-			console.log(values);
+			values.news = this.state.text;
 			if (Number(type) === 1) {
 				let isEdit = edit === true ? "updateMenu" : "addMenu";
 				if (edit) values.id = editData.id;
@@ -186,7 +223,7 @@ class BrandPage extends React.Component {
 	}
 
 	rowDoubleclick = (record, rowIndex) => {
-		this.setState({ editData: record, visible2: true, edit: true, });
+		this.setState({ editData: record, visible2: true, edit: true, text: record.news, type: record.type.toString(), isEditType: record.type.toString() });
 	}
 
 	clickCell = (record, e) => {
@@ -200,8 +237,12 @@ class BrandPage extends React.Component {
 			});
 	}
 
+	handleChange = () => {
+		console.log("handle change");
+	}
+
 	render() {
-		const { edit } = this.state;
+		const { edit, isEditType, editData } = this.state;
 		const { getFieldDecorator } = this.props.form;
 		return (
 			<div style={{ padding: "20px" }}>
@@ -222,32 +263,26 @@ class BrandPage extends React.Component {
 				>
 					<Row>
 						<Form layout="inline" {...formItemLayout}>
-							<Tabs defaultActiveKey={this.state.type} onChange={this.callback}>
-								<TabPane tab="Эцэг" key="1">
+							<Tabs activeKey={this.state.type} onChange={this.callback}>
+								<TabPane tab="Эцэг" key="1" disabled={isEditType === null ? false : isEditType === "2" ? true : false}>
 									<Form.Item label="Цэсний нэр" style={{ width: "45%", float: "left" }}>
 										{getFieldDecorator("name", {
-											initialValue: this.state.editData.colornm,
-											rules: [{ required: true, message: "Заавал бөглө!" }]
-										})(<Input />)}
-									</Form.Item>
-									<Form.Item label="Мэдээ" style={{ width: "45%", float: "left" }}>
-										{getFieldDecorator("news", {
-											initialValue: this.state.editData.colorcode,
+											initialValue: editData.name,
 											rules: [{ required: true, message: "Заавал бөглө!" }]
 										})(<Input />)}
 									</Form.Item>
 									<Form.Item label="Идэвхтэй эсэх" style={{ width: "45%", float: "left" }} valuePropName="checked">
 										{getFieldDecorator("isenable", {
-											initialValue: this.state.editData.isenable,
+											initialValue: editData.isenable,
 										})(
 											<Checkbox></Checkbox>
 										)}
 									</Form.Item>
 								</TabPane>
-								<TabPane tab="Хүүхэд" key="2">
+								<TabPane tab="Хүүхэд" key="2" disabled={isEditType === null ? false : isEditType === "2" ? true : false}>
 									<Form.Item label="Эцэг цэс" style={{ width: "45%", float: "left" }}>
 										{getFieldDecorator("parentid", {
-											initialValue: this.state.editData.colornm,
+											initialValue: editData.parentid,
 											rules: [{ required: true, message: "Заавал бөглө!" }]
 										})(<Select >
 											{this.rendermain()}
@@ -255,19 +290,13 @@ class BrandPage extends React.Component {
 									</Form.Item>
 									<Form.Item label="Цэсний нэр" style={{ width: "45%", float: "left" }}>
 										{getFieldDecorator("name", {
-											initialValue: this.state.editData.colornm,
-											rules: [{ required: true, message: "Заавал бөглө!" }]
-										})(<Input />)}
-									</Form.Item>
-									<Form.Item label="Мэдээ" style={{ width: "45%", float: "left" }}>
-										{getFieldDecorator("news", {
-											initialValue: this.state.editData.colorcode,
+											initialValue: editData.name,
 											rules: [{ required: true, message: "Заавал бөглө!" }]
 										})(<Input />)}
 									</Form.Item>
 									<Form.Item label="Идэвхтэй эсэх" style={{ width: "45%", float: "left" }} valuePropName="checked">
 										{getFieldDecorator("isenable", {
-											initialValue: this.state.editData.isenable,
+											initialValue: editData.isenable,
 										})(
 											<Checkbox></Checkbox>
 										)}
@@ -275,6 +304,16 @@ class BrandPage extends React.Component {
 								</TabPane>
 							</Tabs>
 						</Form>
+						<ReactQuill
+							theme="snow"
+							modules={this.modules}
+							formats={this.formats}
+							className="w-100"
+							value={this.state.text}
+							onChange={this.handleProcedureContentChange}
+						>
+							<div className="my-editing-area" />
+						</ReactQuill>
 					</Row>
 				</Modal>
 				<Table
