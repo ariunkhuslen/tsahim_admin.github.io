@@ -279,7 +279,7 @@ class BrandPage extends React.Component {
 										)}
 									</Form.Item>
 								</TabPane>
-								<TabPane tab="Хүүхэд" key="2" disabled={isEditType === null ? false : isEditType === "2" ? true : false}>
+								<TabPane tab="Хүүхэд" key="2" disabled={isEditType === null ? false : isEditType === "1" ? true : false}>
 									<Form.Item label="Эцэг цэс" style={{ width: "45%", float: "left" }}>
 										{getFieldDecorator("parentid", {
 											initialValue: editData.parentid,
