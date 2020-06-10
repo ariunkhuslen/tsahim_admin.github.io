@@ -36,7 +36,7 @@ class BrandPage extends React.Component {
 			fileList: [],
 			edit: false,
 			mainMenu: [],
-			type: "2",
+			type: "1",
 		};
 		/* name, parentid, isenable, type, news */
 		this.columns = [
