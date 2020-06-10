@@ -211,7 +211,7 @@ class BrandPage extends React.Component {
 					style={{ marginBottom: "20px", marginRight: "20px" }}
 				>Цэс нэмэх</Button>
 				<Modal
-					title={edit === true ? "Өнгө засах" : "Өнгө нэмэх"}
+					title={edit === true ? "Цэс засах" : "Цэс нэмэх"}
 					visible={this.state.visible2}
 					confirmLoading={this.state.confirmLoading}
 					onCancel={this.handleCancel2}
