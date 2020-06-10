@@ -141,11 +141,7 @@ class DashboardPage extends React.Component {
   };
 
   rowDoubleclick = (record, rowIndex) => {
-    if (this.getUserData() === true) {
-      this.setState({ editData: record, visible: true, edit: true });
-    } else {
-      null;
-    }
+    this.setState({ editData: record, visible: true, edit: true });
   }
 
   clickCell = (record, e) => {

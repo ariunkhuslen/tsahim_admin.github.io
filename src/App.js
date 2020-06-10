@@ -126,12 +126,16 @@ class App extends Component {
                 {this.checkMenus("Баннер бүртгэх", "/banner", 1)}
                 {this.checkMenus("Админ жагсаалт", "/admins", 1)}
                 {this.checkMenus("Барааны хүсэлт", "/productRequest", 2)}
+                <Menu.Item key="Барааны хүсэлт">
+                  <Link to="/productRequest">Барааны хүсэлт</Link>
+                </Menu.Item>
                 <Menu.Item key="exit" style={{ float: 'right' }}>
                   <li onClick={this.exitWeb}>Гарах</li>
                 </Menu.Item>
                 {this.checkMenus("Амдин нэмэх", "/addAdmin", 1, true)}
               </Menu>
             </Header>
+            <Row>
             <Content style={{ padding: "0 50px", marginTop: "100px" }}>
               <div
                 style={{ background: "#fff", padding: "24px", height: "100%" }}
@@ -139,7 +143,8 @@ class App extends Component {
                 {this.checkRoutes(location, "/signup", 1, SignupPage)}
                 {this.checkRoutes(location, "/product", 1, DashBoard)}
                 {this.checkRoutes(location, "/realHomePage", 1, realHomePage)}
-                {this.checkRoutes(location, "/brand", 1, Agree)}
+                {this.checkRoutes(location, "/order", 1, Agree)}
+                {this.checkRoutes(location, "/brand", 1, BrandPage)}
                 {this.checkRoutes(location, "/color", 1, ColorPage)}
                 {this.checkRoutes(location, "/category", 1, CategoryPage)}
                 {this.checkRoutes(location, "/banner", 1, BannerPage)}
@@ -153,7 +158,8 @@ class App extends Component {
               </div>
               <NewAdminModal visible={this.state.visible} changeActionModal={this.changeModal} />
             </Content>
-            <Footer style={{ textAlign: "center" }}>Created by Team1</Footer>
+            </Row>
+            <Footer style={{ textAlign: "center" }}>Created by Amarshop.mn</Footer>
           </Layout>
         </div>
       )

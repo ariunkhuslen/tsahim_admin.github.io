@@ -18,6 +18,7 @@ class CreateAndEditModal extends Component {
 		fileList: [],
 		previewVisible: false,
 		previewImage: "",
+		edit: false,
 	}
 
 	checkValues = (values) => {
@@ -29,10 +30,24 @@ class CreateAndEditModal extends Component {
 			return console.log(error);
 		}
 	}
+
+	getUserData = () => {
+		if (localStorage.getItem("userData") == undefined || localStorage.getItem("userData") == null || localStorage.getItem("userData") == "undefined") {
+		  return "";
+		}
+		let user = JSON.parse(localStorage.getItem("userData"));
+		if (user.adminType == 1) {
+		  return false;
+		} else {
+		  return true;
+		}
+	  }
 	/*  */
 
 	handleSubmit = e => {
-		e.preventDefault();
+		
+		if (this.getUserData() === true) {
+			e.preventDefault();
 		const { edit } = this.props;
 		this.props.form.validateFieldsAndScroll((err, values) => {
 			if (!err) {
@@ -60,7 +75,6 @@ class CreateAndEditModal extends Component {
 							formData.append("files", this.state.fileList[i].originFileObj);
 						}
 					}
-					console.log(this.props.editData);
 
 					let isEdit = edit === true ? "updateRequest" : "addRequest";
 
@@ -75,6 +89,10 @@ class CreateAndEditModal extends Component {
 				}
 			}
 		});
+		} else {
+			message.warning("Та эрхгүй байна.");
+		}
+		
 	};
 
 	handlePreview = file => {
@@ -196,7 +214,7 @@ class CreateAndEditModal extends Component {
 									onChange={this.handleChange}
 								>
 									{
-										uploadButton
+										this.props.edit === true ? <div><img alt="upload_icon" className="w-100" src={API_URL + "/uploads/" + editData.imgnm} /></div> : fileList.length >= 1 ? null : uploadButton
 									}
 								</Upload>
 								<Modal
