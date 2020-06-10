@@ -20,6 +20,7 @@ import {
   NewAdminModal,
   AdminPage,
   China,
+  MenuPage,
 } from "./components/pages";
 
 const { Header, Content, Footer } = Layout;
@@ -91,7 +92,7 @@ class App extends Component {
       return;
     }
 
-    if (user.adminType == adminType) {
+    if (user.adminType === adminType) {
       return (
         <GuestRoute
           location={location}
@@ -125,7 +126,8 @@ class App extends Component {
                 {this.checkMenus("Категори бүртгэх", "/category", 1)}
                 {this.checkMenus("Баннер бүртгэх", "/banner", 1)}
                 {this.checkMenus("Админ жагсаалт", "/admins", 1)}
-                {this.checkMenus("Барааны хүсэлт", "/productRequest", 2)}
+                {/* {this.checkMenus("Барааны хүсэлт", "/productRequest", 2)} */}
+                {this.checkMenus("Цэс бүртгэх", "/menu", 2)}
                 <Menu.Item key="Барааны хүсэлт">
                   <Link to="/productRequest">Барааны хүсэлт</Link>
                 </Menu.Item>
@@ -136,28 +138,29 @@ class App extends Component {
               </Menu>
             </Header>
             <Row>
-            <Content style={{ padding: "0 50px", marginTop: "100px" }}>
-              <div
-                style={{ background: "#fff", padding: "24px", height: "100%" }}
-              >
-                {this.checkRoutes(location, "/signup", 1, SignupPage)}
-                {this.checkRoutes(location, "/product", 1, DashBoard)}
-                {this.checkRoutes(location, "/realHomePage", 1, realHomePage)}
-                {this.checkRoutes(location, "/order", 1, Agree)}
-                {this.checkRoutes(location, "/brand", 1, BrandPage)}
-                {this.checkRoutes(location, "/color", 1, ColorPage)}
-                {this.checkRoutes(location, "/category", 1, CategoryPage)}
-                {this.checkRoutes(location, "/banner", 1, BannerPage)}
-                {this.checkRoutes(location, "/admins", 1, AdminPage)}
-                <GuestRoute
-                  location={location}
-                  path={"/productRequest"}
-                  exact
-                  component={China}
-                />
-              </div>
-              <NewAdminModal visible={this.state.visible} changeActionModal={this.changeModal} />
-            </Content>
+              <Content style={{ padding: "0 50px", marginTop: "100px" }}>
+                <div
+                  style={{ background: "#fff", padding: "24px", height: "100%" }}
+                >
+                  {this.checkRoutes(location, "/signup", 1, SignupPage)}
+                  {this.checkRoutes(location, "/product", 1, DashBoard)}
+                  {this.checkRoutes(location, "/realHomePage", 1, realHomePage)}
+                  {this.checkRoutes(location, "/order", 1, Agree)}
+                  {this.checkRoutes(location, "/brand", 1, BrandPage)}
+                  {this.checkRoutes(location, "/color", 1, ColorPage)}
+                  {this.checkRoutes(location, "/category", 1, CategoryPage)}
+                  {this.checkRoutes(location, "/banner", 1, BannerPage)}
+                  {this.checkRoutes(location, "/admins", 1, AdminPage)}
+                  {this.checkRoutes(location, "/menu", 2, MenuPage)}
+                  <GuestRoute
+                    location={location}
+                    path={"/productRequest"}
+                    exact
+                    component={China}
+                  />
+                </div>
+                <NewAdminModal visible={this.state.visible} changeActionModal={this.changeModal} />
+              </Content>
             </Row>
             <Footer style={{ textAlign: "center" }}>Created by Amarshop.mn</Footer>
           </Layout>

@@ -37,6 +37,75 @@ class DashboardPage extends React.Component {
       category: [],
       edit: false,
     };
+    this.columns_mn = [
+      {
+        title: "Барааны нэр",
+        dataIndex: "skunm",
+        key: "skunm"
+      },
+      {
+        title: "Үнэ",
+        dataIndex: "price",
+        key: "price"
+      },
+      {
+        title: "Үлдэгдэл",
+        dataIndex: "real_qty",
+        key: "real_qty"
+      },
+      {
+        title: "нэмэлт тайлбар",
+        dataIndex: "featuretxt",
+        key: "featuretxt"
+      },
+      {
+        title: "Өнгө",
+        dataIndex: "color_name",
+        key: "color_name"
+      },
+      {
+        title: "Ангилал",
+        dataIndex: "cat_name",
+        key: "cat_name"
+      },
+      {
+        title: "Бренд",
+        dataIndex: "brand_name",
+        key: "brand_name"
+      },
+      {
+        title: "Жин",
+        dataIndex: "weight",
+        key: "weight"
+      },
+      {
+        title: "Өргөн",
+        dataIndex: "width",
+        key: "width"
+      },
+      {
+        title: "Өндөр",
+        dataIndex: "height",
+        key: "height"
+      },
+      {
+        title: 'Устгах',
+        dataIndex: '',
+        key: 'x',
+        render: (text, record) => (
+          <Popconfirm
+            title="Та устгахдаа итгэлтэй байна уу?"
+            okText="Устгах"
+            cancelText="Болих"
+            onConfirm={(e) => this.clickCell(record, e)}
+          >
+            <Button type="danger" icon="delete">
+              Утсгах
+          </Button>
+          </Popconfirm>
+        ),
+      },
+    ];
     this.columns = [
       {
         title: "代碼",
@@ -204,7 +273,7 @@ class DashboardPage extends React.Component {
 
   render() {
     const { previewVisible, previewImage, fileList } = this.state;
-
+    let user = JSON.parse(localStorage.getItem("userData"));
     return (
       <div style={{ padding: "20px" }}>
         {this.getUserData() === true ? <Button
@@ -212,7 +281,7 @@ class DashboardPage extends React.Component {
           onClick={this.showModal}
           style={{ marginBottom: "20px", marginRight: "20px" }}
         >
-          添加商品
+          {user.adminType === 2 ? "添加商品" : "Бараа нэмэх"}
         </Button> : null}
         <CreateAndEditModal
           {...this.state}
@@ -221,7 +290,7 @@ class DashboardPage extends React.Component {
           getData={this.getData}
         />
         <Table
-          columns={this.columns}
+          columns={user.adminType === 2 ? this.columns : this.columns_mn}
           rowKey="uid"
           dataSource={this.state.data}
           bordered

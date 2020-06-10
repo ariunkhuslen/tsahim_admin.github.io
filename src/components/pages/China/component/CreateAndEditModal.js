@@ -33,66 +33,66 @@ class CreateAndEditModal extends Component {
 
 	getUserData = () => {
 		if (localStorage.getItem("userData") == undefined || localStorage.getItem("userData") == null || localStorage.getItem("userData") == "undefined") {
-		  return "";
+			return "";
 		}
 		let user = JSON.parse(localStorage.getItem("userData"));
 		if (user.adminType == 1) {
-		  return false;
+			return false;
 		} else {
-		  return true;
+			return true;
 		}
-	  }
+	}
 	/*  */
 
 	handleSubmit = e => {
-		
+
 		if (this.getUserData() === true) {
 			e.preventDefault();
-		const { edit } = this.props;
-		this.props.form.validateFieldsAndScroll((err, values) => {
-			if (!err) {
-				if (this.state.fileList.length === 0 && !edit) {
-					message.error("Барааны зураг оруулна уу.");
-					return;
-				}
-				else {
-					var formData = new FormData();
-					formData.append("skunm", values.skunm);
-					formData.append("price", values.price);
-					formData.append("real_qty", values.real_qty);
-					formData.append("featuretxt", values.featuretxt);
-					formData.append("color_name", values.color_name);
-					formData.append("cat_name", values.cat_name);
-					formData.append("brand_name", values.brand_name);
-					formData.append("weight", values.weight);
-					formData.append("width", values.width);
-					formData.append("height", values.height);
-					if (edit) {
-						formData.append("id", this.props.editData.id);
-						formData.append("filename", this.props.editData.imgnm);
-					} else {
-						for (let i = 0; i < this.state.fileList.length; i++) {
-							formData.append("files", this.state.fileList[i].originFileObj);
-						}
+			const { edit } = this.props;
+			this.props.form.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					if (this.state.fileList.length === 0 && !edit) {
+						message.error("Барааны зураг оруулна уу.");
+						return;
 					}
+					else {
+						var formData = new FormData();
+						formData.append("skunm", values.skunm);
+						formData.append("price", values.price);
+						formData.append("real_qty", values.real_qty);
+						formData.append("featuretxt", values.featuretxt);
+						formData.append("color_name", values.color_name);
+						formData.append("cat_name", values.cat_name);
+						formData.append("brand_name", values.brand_name);
+						formData.append("weight", values.weight);
+						formData.append("width", values.width);
+						formData.append("height", values.height);
+						if (edit) {
+							formData.append("id", this.props.editData.id);
+							formData.append("filename", this.props.editData.imgnm);
+						} else {
+							for (let i = 0; i < this.state.fileList.length; i++) {
+								formData.append("files", this.state.fileList[i].originFileObj);
+							}
+						}
 
-					let isEdit = edit === true ? "updateRequest" : "addRequest";
+						let isEdit = edit === true ? "updateRequest" : "addRequest";
 
-					fetch(API_URL + `/request/${isEdit}`, {
-						method: "POST",
-						body: formData
-					}).then(response => {
-						this.props.getData();
-						this.props.handleCancel();
-						this.props.form.resetFields();
-					});
+						fetch(API_URL + `/request/${isEdit}`, {
+							method: "POST",
+							body: formData
+						}).then(response => {
+							this.props.getData();
+							this.props.handleCancel();
+							this.props.form.resetFields();
+						});
+					}
 				}
-			}
-		});
+			});
 		} else {
 			message.warning("Та эрхгүй байна.");
 		}
-		
+
 	};
 
 	handlePreview = file => {
@@ -109,17 +109,18 @@ class CreateAndEditModal extends Component {
 
 	render() {
 		const { getFieldDecorator } = this.props.form;
-		const { previewVisible, previewImage, fileList } = this.state;
+		const { previewVisible, previewImage, fileList, edit } = this.state;
 		const { editData } = this.props;
+		let user = JSON.parse(localStorage.getItem("userData"));
 		const uploadButton = (
 			<div>
 				<Icon type="plus" />
-				<div className="ant-upload-text">上傳一張照片</div>
+				{<div className="ant-upload-text">{user.adminType === 2 ? "上傳一張照片" : "Зураг оруулах"}</div>}
 			</div>
 		);
 		return (
 			<Modal
-				title="添加商品"
+				title={user.adminType === 2 ? '"添加商品"' : "Бараа бүртгэх"}
 				visible={this.props.visible}
 				confirmLoading={this.props.confirmLoading}
 				onCancel={this.props.handleCancel}
