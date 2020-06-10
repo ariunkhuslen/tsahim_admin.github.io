@@ -1,9 +1,12 @@
 import React from "react";
 import { Table, Modal } from "antd";
 import "antd/dist/antd.css";
-import { Form, Input, Button, message, Popconfirm, Row } from "antd";
+import { Form, Input, Button, message, Popconfirm, Row, Checkbox, Tabs, Select } from "antd";
 
 import { API_URL } from "../../../../package.json";
+
+const { TabPane } = Tabs;
+const { Option } = Select;
 
 const formItemLayout = {
 	labelCol: {
@@ -32,7 +35,10 @@ class BrandPage extends React.Component {
 			previewImage: "",
 			fileList: [],
 			edit: false,
+			mainMenu: [],
+			type: "2",
 		};
+		/* name, parentid, isenable, type, news */
 		this.columns = [
 			{
 				title: "id",
@@ -40,14 +46,19 @@ class BrandPage extends React.Component {
 				key: "id"
 			},
 			{
-				title: "Өнгөний нэр",
-				dataIndex: "colornm",
-				key: "colornm",
+				title: "isenable",
+				dataIndex: "isenable",
+				key: "isenable",
 			},
 			{
-				title: "Өнгөний код",
-				dataIndex: "colorcode",
-				key: "colorcode",
+				title: "name",
+				dataIndex: "name",
+				key: "name",
+			},
+			{
+				title: "news",
+				dataIndex: "news",
+				key: "news",
 			},
 			{
 				title: 'Устгах',
@@ -79,10 +90,16 @@ class BrandPage extends React.Component {
 	};
 
 	getData() {
-		fetch(`${API_URL}/color/getAllColor`)
+		fetch(`${API_URL}/menu/getAllMenu`)
 			.then(response => response.json())
 			.then(data =>
 				this.setState({ data: data.data })
+			);
+
+		fetch(`${API_URL}/menu/getAllMainMenu`)
+			.then(response => response.json())
+			.then(data =>
+				this.setState({ mainMenu: data.data })
 			);
 	}
 	componentWillMount() {
@@ -101,16 +118,25 @@ class BrandPage extends React.Component {
 		});
 	};
 
+	callback = (key) => {
+		this.setState({ type: key });
+	}
+
 	handleSubmit = e => {
 		e.preventDefault();
-		const { edit, editData } = this.state;
+		const { edit, editData, type } = this.state;
 
-		this.props.form.validateFieldsAndScroll((err, values) => {
-			if (!err) {
-				let isEdit = edit === true ? "updateColor" : "addColor";
+		this.props.form.validateFields((err, values) => {
+			console.log(type);
+			values.type = Number(type);
+			values.isenable = values.isenable === undefined ? 0 : 1;
+			values.parentid = Number(type) === 1 ? 0 : values.parentid;
+			console.log(values);
+			if (Number(type) === 1) {
+				let isEdit = edit === true ? "updateMenu" : "addMenu";
 				if (edit) values.id = editData.id;
 
-				fetch(`${API_URL}/color/${isEdit}`, {
+				fetch(`${API_URL}/menu/${isEdit}`, {
 					headers: {
 						'Content-Type': 'application/json'
 					},
@@ -123,6 +149,25 @@ class BrandPage extends React.Component {
 					this.handleCancel2();
 					this.props.form.resetFields();
 				});
+			} else {
+				if (!err) {
+					let isEdit = edit === true ? "updateMenu" : "addMenu";
+					if (edit) values.id = editData.id;
+
+					fetch(`${API_URL}/menu/${isEdit}`, {
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						method: "POST",
+						body: JSON.stringify(values)
+
+					}).then(() => {
+						message.success("Амжилттай");
+						this.getData();
+						this.handleCancel2();
+						this.props.form.resetFields();
+					});
+				}
 			}
 		});
 
@@ -130,29 +175,22 @@ class BrandPage extends React.Component {
 
 	handleCancel = () => this.setState({ previewVisible: false });
 
-	handlePreview = file => {
-		this.setState({
-			previewImage: file.url || file.thumbUrl,
-			previewVisible: true
-		});
-	};
-
-	handleChange = ({ fileList }) => {
-		this.setState({ fileList });
-	};
-
-	realqty = e => {
-		const tmp = this.state.editData;
-		tmp.realqty = e.target.value;
-		this.setState({ editData: tmp });
-	};
+	rendermain = () => {
+		try {
+			const { mainMenu } = this.state;
+			return mainMenu.length === 0 ? <Select.Option disabled key={0}>Хоосон</Select.Option> :
+				mainMenu.map((item, key) => (<Select.Option value={item.id} key={key}>{item.name}</Select.Option>));
+		} catch (error) {
+			return console.log(error);
+		}
+	}
 
 	rowDoubleclick = (record, rowIndex) => {
 		this.setState({ editData: record, visible2: true, edit: true, });
 	}
 
 	clickCell = (record, e) => {
-		fetch(`${API_URL}/color/deleteColor/${record.id}`, {
+		fetch(`${API_URL}/menu/deleteMenu/${record.id}`, {
 			method: 'DELETE',
 		}).then(response => response.json())
 			.then(data => {
@@ -171,7 +209,7 @@ class BrandPage extends React.Component {
 					type="dashed"
 					onClick={this.showModal}
 					style={{ marginBottom: "20px", marginRight: "20px" }}
-				> Өнгө нэмэх </Button>
+				>Цэс нэмэх</Button>
 				<Modal
 					title={edit === true ? "Өнгө засах" : "Өнгө нэмэх"}
 					visible={this.state.visible2}
@@ -184,20 +222,58 @@ class BrandPage extends React.Component {
 				>
 					<Row>
 						<Form layout="inline" {...formItemLayout}>
-							<Form.Item label="Өнгөний нэр" style={{ width: "45%", float: "left" }}>
-								{getFieldDecorator("colornm", {
-									initialValue: this.state.editData.colornm,
-									rules: [{ required: true, message: "Заавал бөглө!" }]
-								})(<Input />)}
-							</Form.Item>
-						</Form>
-						<Form layout="inline" {...formItemLayout}>
-							<Form.Item label="Өнгөний код" style={{ width: "45%", float: "left" }}>
-								{getFieldDecorator("colorcode", {
-									initialValue: this.state.editData.colorcode,
-									rules: [{ required: true, message: "Заавал бөглө!" }]
-								})(<Input />)}
-							</Form.Item>
+							<Tabs defaultActiveKey={this.state.type} onChange={this.callback}>
+								<TabPane tab="Эцэг" key="1">
+									<Form.Item label="Цэсний нэр" style={{ width: "45%", float: "left" }}>
+										{getFieldDecorator("name", {
+											initialValue: this.state.editData.colornm,
+											rules: [{ required: true, message: "Заавал бөглө!" }]
+										})(<Input />)}
+									</Form.Item>
+									<Form.Item label="Мэдээ" style={{ width: "45%", float: "left" }}>
+										{getFieldDecorator("news", {
+											initialValue: this.state.editData.colorcode,
+											rules: [{ required: true, message: "Заавал бөглө!" }]
+										})(<Input />)}
+									</Form.Item>
+									<Form.Item label="Идэвхтэй эсэх" style={{ width: "45%", float: "left" }} valuePropName="checked">
+										{getFieldDecorator("isenable", {
+											initialValue: this.state.editData.isenable,
+										})(
+											<Checkbox></Checkbox>
+										)}
+									</Form.Item>
+								</TabPane>
+								<TabPane tab="Хүүхэд" key="2">
+									<Form.Item label="Эцэг цэс" style={{ width: "45%", float: "left" }}>
+										{getFieldDecorator("parentid", {
+											initialValue: this.state.editData.colornm,
+											rules: [{ required: true, message: "Заавал бөглө!" }]
+										})(<Select >
+											{this.rendermain()}
+										</Select>)}
+									</Form.Item>
+									<Form.Item label="Цэсний нэр" style={{ width: "45%", float: "left" }}>
+										{getFieldDecorator("name", {
+											initialValue: this.state.editData.colornm,
+											rules: [{ required: true, message: "Заавал бөглө!" }]
+										})(<Input />)}
+									</Form.Item>
+									<Form.Item label="Мэдээ" style={{ width: "45%", float: "left" }}>
+										{getFieldDecorator("news", {
+											initialValue: this.state.editData.colorcode,
+											rules: [{ required: true, message: "Заавал бөглө!" }]
+										})(<Input />)}
+									</Form.Item>
+									<Form.Item label="Идэвхтэй эсэх" style={{ width: "45%", float: "left" }} valuePropName="checked">
+										{getFieldDecorator("isenable", {
+											initialValue: this.state.editData.isenable,
+										})(
+											<Checkbox></Checkbox>
+										)}
+									</Form.Item>
+								</TabPane>
+							</Tabs>
 						</Form>
 					</Row>
 				</Modal>
