@@ -2,7 +2,7 @@
   "name": "bookworm-react",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://admin.amarshop.mn",
+  "homepage": "http://31ca6a19c462.ngrok.io",
   "API_URL": "http://localhost:6001",
   "dependencies": {
     "antd": "^3.15.2",

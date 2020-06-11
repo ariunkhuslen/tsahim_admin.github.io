@@ -100,7 +100,7 @@ class BrandPage extends React.Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        if (this.state.fileList.length === 0 && !edit) {
+        if (this.state.fileList.length === 0) {
           message.error("Брандын зураг оруулна уу.");
         }
         else {
@@ -108,9 +108,11 @@ class BrandPage extends React.Component {
           formData.append("brandnm", values.brandnm);
           if (edit) {
             formData.append("id", editData.brandid);
-            formData.append("files", this.state.editData.imgnm);
-          } else {
-            for (let i = 0; i < this.state.fileList.length; i++) {
+          }
+
+          for (let i = 0; i < this.state.fileList.length; i++) {
+            if(this.state.fileList[i].originFileObj !== undefined)
+            {
               formData.append("files", this.state.fileList[i].originFileObj);
             }
           }
@@ -120,10 +122,18 @@ class BrandPage extends React.Component {
           fetch(`${API_URL}/brand/${isEdit}`, {
             method: "POST",
             body: formData
-          }).then(response => {
-            this.getData();
-            this.handleCancel2();
-            this.props.form.resetFields();
+          }).then(response => { return response.json() }).then( myJson => {
+            if(myJson.success)
+            {
+              this.getData();
+              this.handleCancel2();
+              this.props.form.resetFields();
+              message.success(myJson.message);
+            }
+            else
+            {
+              message.error(myJson.message);
+            }
           });
         }
       }
@@ -151,8 +161,18 @@ class BrandPage extends React.Component {
   };
 
   rowDoubleclick = (record, rowIndex) => {
-    console.log(record);
-    this.setState({ editData: record, visible2: true, edit: true, });
+    let tmp = [];
+    if(record.brandimg != "" && record.brandimg != "undefined")
+    {
+      let tmp1 = {
+        uid: record.brandid,
+        name: record.brandnm,
+        status: 'done',
+        url: API_URL + "/uploads/" + record.brandimg,
+      }
+        tmp.push(tmp1)
+    }
+    this.setState({ editData: record, visible2: true, edit: true, fileList: tmp });
   }
 
   clickCell = (record, e) => {
@@ -162,6 +182,26 @@ class BrandPage extends React.Component {
       .then(data =>
         console.log(data)
       );
+  }
+
+  removeImage = (e) => {
+    if(e.thumbUrl == undefined)
+    {
+      console.log(e)
+      fetch(`${API_URL}/brand/deleteImage/${e.uid}`, {
+        method: 'DELETE',
+      }).then(response => response.json())
+        .then(data => {
+          if(data.success)
+          {
+            message.success(data.message);
+          }
+          else
+          {
+            message.error(data.message);
+          }
+        });
+    }
   }
 
   render() {
@@ -182,7 +222,7 @@ class BrandPage extends React.Component {
           Бранд нэмэх
         </Button>
         <Modal
-          title="Бараа нэмэх"
+          title="Бранд нэмэх"
           visible={this.state.visible2}
           confirmLoading={this.state.confirmLoading}
           onCancel={this.handleCancel2}
@@ -205,14 +245,16 @@ class BrandPage extends React.Component {
               <Form.Item label="Брандын зураг" style={{ width: "45%", float: "left" }}>
                 <div className="clearfix">
                   <Upload
-                    action="//jsonplaceholder.typicode.com/posts/"
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     listType="picture-card"
                     fileList={fileList}
-                    // onPreview={this.handlePreview}
+                    onPreview={this.handlePreview}
                     onChange={this.handleChange}
+                    onRemove={this.removeImage}
+
                   >
                     {
-                      edit === true ? <div><img alt="upload_icon" className="w-100" src={API_URL + "/uploads/" + editData.brandimg} /></div> : fileList.length >= 1 ? null : uploadButton
+                      fileList.length === 0 ? uploadButton : null
                     }
                   </Upload>
                   <Modal

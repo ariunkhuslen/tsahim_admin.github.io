@@ -38,11 +38,6 @@ class DashboardPage extends React.Component {
     };
     this.columns = [
       {
-        title: "Барааны код",
-        dataIndex: "skucd",
-        key: "skucd"
-      },
-      {
         title: "Барааны нэр",
         dataIndex: "skunm",
         key: "skunm"
@@ -84,11 +79,11 @@ class DashboardPage extends React.Component {
 
 
   showModal = () => {
-    console.log("tests")
     this.setState({
       editData: [],
       visible2: true,
-      edit: false
+      edit: false,
+      fileList: []
     });
   };
 
@@ -135,7 +130,6 @@ class DashboardPage extends React.Component {
         }
         else {
           var formData = new FormData();
-          formData.append("skucd", values.skucd);
           formData.append("spice", values.spice);
           formData.append("price", values.price);
           formData.append("realqty", values.realqty);
@@ -149,11 +143,13 @@ class DashboardPage extends React.Component {
           formData.append("isnew", values.isnew);
           if (edit) {
             formData.append("id", this.state.editData.id);
-            formData.append("filename", this.state.editData.imgnm);
-          } else {
-            for (let i = 0; i < this.state.fileList.length; i++) {
+          }
+
+          for (let i = 0; i < this.state.fileList.length; i++) {
+            if(this.state.fileList[i].originFileObj !== undefined)
+            {
               formData.append("files", this.state.fileList[i].originFileObj);
-            }
+            } 
           }
 
           let isEdit = edit === true ? "updateProduct" : "addProduct";
@@ -161,10 +157,19 @@ class DashboardPage extends React.Component {
           fetch(API_URL + `/product/${isEdit}`, {
             method: "POST",
             body: formData
-          }).then(response => {
-            this.getData();
-            this.handleCancel2();
-            this.props.form.resetFields();
+          }).then(function (response) { return response.json(); }).then(myJson => {
+            if(myJson.success)
+            {
+              this.getData();
+              this.handleCancel2();
+              this.props.form.resetFields();
+              this.setState({ fileList: [] })
+              message.success(myJson.message);
+            }
+            else
+            {
+              message.error(myJson.message);
+            }
           });
         }
       }
@@ -191,11 +196,31 @@ class DashboardPage extends React.Component {
   };
 
   rowDoubleclick = (record, rowIndex) => {
+    fetch(API_URL + "/product/getProductDetailImg/" + record.id).then(function (response) { return response.json(); }).then(myJson => {
+      if(myJson.success)
+      {
+        let tmp = []
+        myJson.data.map((item, i) => {
+          let tmp1 = {
+            uid: item.id,
+            name: item.imgnm,
+            status: 'done',
+            url: API_URL + "/uploads/" + item.imgnm,
+            }
+            tmp.push(tmp1)
+        })
+        this.setState({ fileList: tmp })
+      }
+      else
+      {
+        message.error("Барааны зураг авхад алдаа гарлаа.");
+      }
+    });
     this.setState({ editData: record, visible2: true, edit: true });
   }
 
   clickCell = (record, e) => {
-    console.log(record);
+    
   }
 
   renderColor = () => {
@@ -203,7 +228,7 @@ class DashboardPage extends React.Component {
       const { color } = this.state;
       return color.length === 0 ? <Select.Option disabled key={0}>Хоосон</Select.Option> : color.map((item, key) => (<Select.Option value={item.id} key={key}>{item.colornm}</Select.Option>));
     } catch (error) {
-      return console.log(error);
+      return;
     }
   }
 
@@ -212,7 +237,7 @@ class DashboardPage extends React.Component {
       const { brand } = this.state;
       return brand.length === 0 ? <Select.Option disabled key={0}>Хоосон</Select.Option> : brand.map((item, key) => (<Select.Option value={item.brandid} key={key}>{item.brandnm}</Select.Option>));
     } catch (error) {
-      return console.log(error);
+      return;
     }
   }
 
@@ -221,7 +246,7 @@ class DashboardPage extends React.Component {
       const { category } = this.state;
       return category.length === 0 ? <Select.Option disabled key={0}>Хоосон</Select.Option> : category.map((item, key) => (<Select.Option value={item.id} key={key}>{item.catnm}</Select.Option>));
     } catch (error) {
-      return console.log(error);
+      return;
     }
   }
 
@@ -231,9 +256,27 @@ class DashboardPage extends React.Component {
         return "";
       return values;
     } catch (error) {
-      return console.log(error);
+      return;
     }
+  }
 
+  removeImage = (e) => {
+    if(e.thumbUrl == undefined)
+    {
+      fetch(`${API_URL}/product/deleteImage/${e.uid}`, {
+        method: 'DELETE',
+      }).then(response => response.json())
+        .then(data => {
+          if(data.success)
+          {
+            message.success(data.message);
+          }
+          else
+          {
+            message.error(data.message);
+          }
+        });
+    }
   }
 
   render() {
@@ -245,8 +288,6 @@ class DashboardPage extends React.Component {
         <div className="ant-upload-text">Зураг оруулах</div>
       </div>
     );
-
-    console.log(this.state.editData.skucd)
     return (
       <div style={{ padding: "20px" }}>
         <Button
@@ -270,12 +311,6 @@ class DashboardPage extends React.Component {
         >
           <Row>
             <Form layout="inline" {...formItemLayout}>
-              <Form.Item label="Барааны код" style={{ width: "45%", float: "left" }}>
-                {getFieldDecorator("skucd", {
-                  initialValue: this.checkValues(this.state.editData.skucd),
-                  rules: [{ required: true, message: "Заавал бөглө!" }]
-                })(<Input />)}
-              </Form.Item>
               <Form.Item label="Барааны нэр" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("skunm", {
                   initialValue: this.checkValues(this.state.editData.skunm),
@@ -352,7 +387,7 @@ class DashboardPage extends React.Component {
               </Form.Item>
               <Form.Item label="Эрэлттэй бараа эсэх" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("istop", {
-                  initialValue: this.checkValues(this.state.editData.istop),
+                  initialValue: this.checkValues(this.state.editData.istop) === "" ? "0" : this.checkValues(this.state.editData.istop),
                   rules: [{ required: false }]
                 })(
                   <Select>
@@ -363,7 +398,7 @@ class DashboardPage extends React.Component {
               </Form.Item>
               <Form.Item label="Шинэ бараа эсэх" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("isnew", {
-                  initialValue: this.checkValues(this.state.editData.isnew),
+                  initialValue: this.checkValues(this.state.editData.isnew) === "" ? "0" : this.checkValues(this.state.editData.isnew),
                   rules: [{ required: false }]
                 })(
                   <Select>
@@ -381,11 +416,23 @@ class DashboardPage extends React.Component {
                     fileList={fileList}
                     onPreview={this.handlePreview}
                     onChange={this.handleChange}
+                    onRemove={this.removeImage}
                   >
                     {
                       uploadButton
                     }
                   </Upload>
+                  <Modal
+                    visible={previewVisible}
+                    footer={null}
+                    onCancel={this.handleCancel}
+                  >
+                    <img
+                      alt="example"
+                      style={{ width: "100%" }}
+                      src={previewImage}
+                    />
+                  </Modal>
                 </div>
               </Form.Item>
             </Form>

@@ -134,7 +134,9 @@ class App extends Component {
                 <Menu.Item key="exit" style={{ float: 'right' }}>
                   <li onClick={this.exitWeb}>Гарах</li>
                 </Menu.Item>
-                {this.checkMenus("Амдин нэмэх", "/addAdmin", 1, true)}
+                <Menu.Item key="addAdmin" style={{ float: 'right' }}>
+                  <li onClick={(e) => this.changeModal(true)}>Амдин нэмэх</li>
+                </Menu.Item>
               </Menu>
             </Header>
             <Row>
