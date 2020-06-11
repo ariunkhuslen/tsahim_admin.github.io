@@ -127,7 +127,7 @@ class App extends Component {
                 {this.checkMenus("Баннер бүртгэх", "/banner", 1)}
                 {this.checkMenus("Админ жагсаалт", "/admins", 1)}
                 {/* {this.checkMenus("Барааны хүсэлт", "/productRequest", 2)} */}
-                {this.checkMenus("Цэс бүртгэх", "/menu", 2)}
+                {this.checkMenus("Цэс бүртгэх", "/menu", 1)}
                 <Menu.Item key="Барааны хүсэлт">
                   <Link to="/productRequest">Барааны хүсэлт</Link>
                 </Menu.Item>
@@ -151,7 +151,7 @@ class App extends Component {
                   {this.checkRoutes(location, "/category", 1, CategoryPage)}
                   {this.checkRoutes(location, "/banner", 1, BannerPage)}
                   {this.checkRoutes(location, "/admins", 1, AdminPage)}
-                  {this.checkRoutes(location, "/menu", 2, MenuPage)}
+                  {this.checkRoutes(location, "/menu", 1, MenuPage)}
                   <GuestRoute
                     location={location}
                     path={"/productRequest"}

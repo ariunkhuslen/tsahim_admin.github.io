@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "http://admin.amarshop.mn",
-  "API_URL": "http://c1b6e9dd8e7e.ngrok.io",
+  "API_URL": "http://localhost:6001",
   "dependencies": {
     "antd": "^3.15.2",
     "axios": "^0.16.2",

@@ -1,7 +1,7 @@
 import React from "react";
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { Form, Divider, Modal } from "antd";
+import { Form, Divider, Modal, Button, Icon } from "antd";
 /* import { Link } from "react-router-dom"; */
 import { API_URL } from "../../../package.json";
 const { Column /* , ColumnGroup */ } = Table;
@@ -107,6 +107,15 @@ class DashboardPage extends React.Component {
     });
   };
 
+  deleteOrder = (e, record) => {
+    fetch(`${API_URL}/order/deleteOrder/${record.id}`, {
+        method: 'DELETE',
+    }).then(response => response.json())
+        .then(data =>
+            this.setData()
+        );
+}
+
   handleOk = () => {
     this.setState({
       ModalText: "The modal will be closed after two seconds",
@@ -150,12 +159,14 @@ class DashboardPage extends React.Component {
             render={(text, record) => (
               <span>
                 {record.ord_type === 0 ? (
-                  <a onClick={e => this.onAgree(e, record)}>Батлах</a>
+                  <Button icon="plus" size={"medium"} onClick={e => this.onAgree(e, record)}/>
                 ) : (
-                    <a onClick={e => this.onDisAgree(e, record)}>Цуцлах</a>
+                    <Button  icon="minus" size={"medium"} onClick={e => this.onDisAgree(e, record)}/>
                   )}
                 <Divider type="vertical" />
-                {<a onClick={e => this.showModal(e, record)}>Дэлгэрэнгүй</a>}
+                <Button  icon="eye" size={"medium"} onClick={e => this.showModal(e, record)}/>
+                <Divider type="vertical" />
+                <Button icon="delete" size={"medium"} onClick={e => this.deleteOrder(e, record)} danger/>
               </span>
             )}
           />

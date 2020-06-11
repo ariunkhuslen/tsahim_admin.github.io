@@ -376,7 +376,7 @@ class DashboardPage extends React.Component {
               <Form.Item label="Барааны зураг" style={{ width: "45%", float: "left" }}>
                 <div className="clearfix">
                   <Upload
-                    action="//jsonplaceholder.typicode.com/posts/"
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     listType="picture-card"
                     fileList={fileList}
                     onPreview={this.handlePreview}
@@ -386,17 +386,6 @@ class DashboardPage extends React.Component {
                       uploadButton
                     }
                   </Upload>
-                  <Modal
-                    visible={previewVisible}
-                    footer={null}
-                    onCancel={this.handleCancel}
-                  >
-                    <img
-                      alt="example"
-                      style={{ width: "100%" }}
-                      src={previewImage}
-                    />
-                  </Modal>
                 </div>
               </Form.Item>
             </Form>

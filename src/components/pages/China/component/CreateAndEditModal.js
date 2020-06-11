@@ -106,6 +106,19 @@ class CreateAndEditModal extends Component {
 		this.setState({ fileList });
 	};
 
+	renderFileList = () => {
+		let tmp = [];
+		let tmp1 = {
+			uid: '-4',
+			name: 'image.png',
+			status: 'done',
+			url: API_URL + "/uploads/" + this.props.editData.imgnm,
+		  }
+		tmp.push(tmp1);
+		return tmp;
+	}
+
+	handleCancelImg = () => this.setState({ previewVisible: false });
 
 	render() {
 		const { getFieldDecorator } = this.props.form;
@@ -208,20 +221,20 @@ class CreateAndEditModal extends Component {
 						<Form.Item label="Барааны зураг" style={{ width: "45%", float: "left" }}>
 							<div className="clearfix">
 								<Upload
-									action="//jsonplaceholder.typicode.com/posts/"
+									action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
 									listType="picture-card"
-									fileList={fileList}
+									fileList={this.renderFileList()}
 									onPreview={this.handlePreview}
 									onChange={this.handleChange}
 								>
 									{
-										this.props.edit === true ? <div><img alt="upload_icon" className="w-100" src={API_URL + "/uploads/" + editData.imgnm} /></div> : fileList.length >= 1 ? null : uploadButton
+										!this.props.edit ? null : uploadButton
 									}
 								</Upload>
 								<Modal
 									visible={previewVisible}
 									footer={null}
-									onCancel={this.handleCancel}
+									onCancel={this.handleCancelImg}
 								>
 									<img
 										alt="example"
