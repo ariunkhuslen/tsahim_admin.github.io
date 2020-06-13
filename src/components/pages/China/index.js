@@ -36,6 +36,7 @@ class DashboardPage extends React.Component {
       color: [],
       category: [],
       edit: false,
+      imageLoader: false,
     };
     this.columns_mn = [
       {
@@ -197,7 +198,9 @@ class DashboardPage extends React.Component {
 
   handleCancel2 = () => {
     this.setState({
-      visible: false
+      visible: false,
+      editData: [],
+      fileList: [],
     });
   };
 
@@ -210,28 +213,10 @@ class DashboardPage extends React.Component {
   };
 
   rowDoubleclick = (record, rowIndex) => {
-    fetch(API_URL + "/product/getProductDetailImg/" + record.id).then(function (response) { return response.json(); }).then(myJson => {
-      if(myJson.success)
-      {
-        let tmp = []
-        myJson.data.map((item, i) => {
-          let tmp1 = {
-            uid: item.id,
-            name: item.imgnm,
-            status: 'done',
-            url: API_URL + "/uploads/" + item.imgnm,
-            }
-            tmp.push(tmp1)
-        })
-        this.setState({ fileList: tmp })
-      }
-      else
-      {
-        message.error("Барааны зураг авхад алдаа гарлаа.");
-      }
-    });
-    this.setState({ editData: record, visible: true, edit: true });
+    this.setState({ editData: record, visible: true, edit: true })
   }
+
+
 
   clickCell = (record, e) => {
     fetch(`${API_URL}/request/deleteRequest/${record.id}`, {
@@ -302,12 +287,14 @@ class DashboardPage extends React.Component {
         >
           {user.adminType === 2 ? "添加商品" : "Бараа нэмэх"}
         </Button> : null}
-        <CreateAndEditModal
-          {...this.state}
-          {...this.props}
-          handleCancel={this.handleCancel2}
-          getData={this.getData}
-        />
+        {
+          this.state.visible === true ? <CreateAndEditModal
+            {...this.state}
+            {...this.props}
+            handleCancel={this.handleCancel2}
+            getData={this.getData}
+          /> : null
+        }
         <Table
           columns={user.adminType === 2 ? this.columns : this.columns_mn}
           rowKey="uid"

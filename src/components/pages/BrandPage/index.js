@@ -35,12 +35,12 @@ class BrandPage extends React.Component {
     };
     this.columns = [
       {
-        title: "Бранд код",
+        title: "Бренд код",
         dataIndex: "brandid",
         key: "brandid"
       },
       {
-        title: "Брандийн нэр",
+        title: "Брендийн нэр",
         dataIndex: "brandnm",
         key: "brandnm",
       },
@@ -90,7 +90,8 @@ class BrandPage extends React.Component {
   };
   handleCancel2 = () => {
     this.setState({
-      visible2: false
+      visible2: false,
+      fileList: [],
     });
   };
 
@@ -101,7 +102,7 @@ class BrandPage extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (this.state.fileList.length === 0) {
-          message.error("Брандын зураг оруулна уу.");
+          message.error("Брендын зураг оруулна уу.");
         }
         else {
           const formData = new FormData();
@@ -111,8 +112,7 @@ class BrandPage extends React.Component {
           }
 
           for (let i = 0; i < this.state.fileList.length; i++) {
-            if(this.state.fileList[i].originFileObj !== undefined)
-            {
+            if (this.state.fileList[i].originFileObj !== undefined) {
               formData.append("files", this.state.fileList[i].originFileObj);
             }
           }
@@ -122,16 +122,14 @@ class BrandPage extends React.Component {
           fetch(`${API_URL}/brand/${isEdit}`, {
             method: "POST",
             body: formData
-          }).then(response => { return response.json() }).then( myJson => {
-            if(myJson.success)
-            {
+          }).then(response => { return response.json() }).then(myJson => {
+            if (myJson.success) {
               this.getData();
               this.handleCancel2();
               this.props.form.resetFields();
               message.success(myJson.message);
             }
-            else
-            {
+            else {
               message.error(myJson.message);
             }
           });
@@ -162,15 +160,14 @@ class BrandPage extends React.Component {
 
   rowDoubleclick = (record, rowIndex) => {
     let tmp = [];
-    if(record.brandimg != "" && record.brandimg != "undefined")
-    {
+    if (record.brandimg != "" && record.brandimg != "undefined") {
       let tmp1 = {
         uid: record.brandid,
         name: record.brandnm,
         status: 'done',
         url: API_URL + "/uploads/" + record.brandimg,
       }
-        tmp.push(tmp1)
+      tmp.push(tmp1)
     }
     this.setState({ editData: record, visible2: true, edit: true, fileList: tmp });
   }
@@ -185,19 +182,15 @@ class BrandPage extends React.Component {
   }
 
   removeImage = (e) => {
-    if(e.thumbUrl == undefined)
-    {
-      console.log(e)
+    if (e.thumbUrl == undefined) {
       fetch(`${API_URL}/brand/deleteImage/${e.uid}`, {
         method: 'DELETE',
       }).then(response => response.json())
         .then(data => {
-          if(data.success)
-          {
+          if (data.success) {
             message.success(data.message);
           }
-          else
-          {
+          else {
             message.error(data.message);
           }
         });
@@ -219,10 +212,10 @@ class BrandPage extends React.Component {
           onClick={this.showModal}
           style={{ marginBottom: "20px", marginRight: "20px" }}
         >
-          Бранд нэмэх
+          Бренд нэмэх
         </Button>
         <Modal
-          title="Бранд нэмэх"
+          title="Бренд нэмэх"
           visible={this.state.visible2}
           confirmLoading={this.state.confirmLoading}
           onCancel={this.handleCancel2}
@@ -235,14 +228,14 @@ class BrandPage extends React.Component {
         >
           <Row>
             <Form layout="inline" {...formItemLayout}>
-              <Form.Item label="Брандийн нэр" style={{ width: "45%", float: "left" }}>
+              <Form.Item label="Брендийн нэр" style={{ width: "45%", float: "left" }}>
                 {getFieldDecorator("brandnm", {
                   initialValue: this.state.editData.brandnm,
                   rules: [{ required: true, message: "Заавал бөглө!" }]
                 })(<Input />)}
               </Form.Item>
 
-              <Form.Item label="Брандын зураг" style={{ width: "45%", float: "left" }}>
+              <Form.Item label="Брендын зураг" style={{ width: "45%", float: "left" }}>
                 <div className="clearfix">
                   <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
