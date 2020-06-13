@@ -64,7 +64,6 @@ class BrandPage extends React.Component {
 			"image"
 		];
 
-		/* name, parentid, isenable, type, news */
 		this.columns = [
 			{
 				title: "id",
@@ -80,11 +79,6 @@ class BrandPage extends React.Component {
 				title: "name",
 				dataIndex: "name",
 				key: "name",
-			},
-			{
-				title: "news",
-				dataIndex: "news",
-				key: "news",
 			},
 			{
 				title: 'Устгах',

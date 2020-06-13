@@ -36,6 +36,7 @@ class DashboardPage extends React.Component {
       color: [],
       category: [],
       edit: false,
+      imageLoader: false,
     };
     this.columns_mn = [
       {
@@ -197,7 +198,9 @@ class DashboardPage extends React.Component {
 
   handleCancel2 = () => {
     this.setState({
-      visible: false
+      visible: false,
+      editData: [],
+      fileList: [],
     });
   };
 
@@ -210,9 +213,11 @@ class DashboardPage extends React.Component {
   };
 
   rowDoubleclick = (record, rowIndex) => {
-    this.setState({ editData: record, visible: true, edit: true });
+    this.setState({ editData: record, visible: true, edit: true })
   }
-
+  plusFile = (fileList) => {
+    this.setState({ fileList });
+  }
   clickCell = (record, e) => {
     fetch(`${API_URL}/request/deleteRequest/${record.id}`, {
       method: 'DELETE',
@@ -283,12 +288,14 @@ class DashboardPage extends React.Component {
         >
           {user.adminType === 2 ? "添加商品" : "Бараа нэмэх"}
         </Button> : null}
-        <CreateAndEditModal
-          {...this.state}
-          {...this.props}
-          handleCancel={this.handleCancel2}
-          getData={this.getData}
-        />
+        {
+          this.state.visible === true ? <CreateAndEditModal
+            {...this.state}
+            {...this.props}
+            handleCancel={this.handleCancel2}
+            getData={this.getData}
+          /> : null
+        }
         <Table
           columns={user.adminType === 2 ? this.columns : this.columns_mn}
           rowKey="uid"

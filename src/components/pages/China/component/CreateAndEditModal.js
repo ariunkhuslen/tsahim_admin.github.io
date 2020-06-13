@@ -21,6 +21,26 @@ class CreateAndEditModal extends Component {
 		edit: false,
 	}
 
+	componentWillMount() {
+		fetch(API_URL + `/request/getRequestDetailImg/${this.props.editData.id}`).then(function (response) { return response.json(); }).then(myJson => {
+			if (myJson.success) {
+				let tmp = []
+				myJson.data.map((item, i) => {
+					let tmp1 = {
+						uid: item.id,
+						name: item.imgnm,
+						status: 'done',
+						url: API_URL + "/uploads/" + item.imgnm,
+					}
+					tmp.push(tmp1)
+				})
+				console.log(tmp);
+				this.setState({ fileList: tmp })
+			}
+		})
+	}
+
+
 	checkValues = (values) => {
 		try {
 			if (values === undefined)
@@ -67,13 +87,12 @@ class CreateAndEditModal extends Component {
 						formData.append("weight", values.weight);
 						formData.append("width", values.width);
 						formData.append("height", values.height);
+
 						if (edit) {
 							formData.append("id", this.props.editData.id);
-							formData.append("filename", this.props.editData.imgnm);
-						} else {
-							for (let i = 0; i < this.state.fileList.length; i++) {
-								formData.append("files", this.state.fileList[i].originFileObj);
-							}
+						}
+						for (let i = 0; i < this.state.fileList.length; i++) {
+							formData.append("files", this.state.fileList[i].originFileObj);
 						}
 
 						let isEdit = edit === true ? "updateRequest" : "addRequest";
@@ -103,22 +122,35 @@ class CreateAndEditModal extends Component {
 	};
 
 	handleChange = ({ fileList }) => {
-		this.setState({ fileList });
+		this.setState({ fileList })
 	};
 
 	renderFileList = () => {
-		let tmp = [];
-		let tmp1 = {
-			uid: '-4',
-			name: 'image.png',
-			status: 'done',
-			url: API_URL + "/uploads/" + this.props.editData.imgnm,
-		  }
-		tmp.push(tmp1);
-		return tmp;
+		return this.props.fileList;
 	}
 
 	handleCancelImg = () => this.setState({ previewVisible: false });
+
+	handleCancelModal = () => {
+		this.props.form.resetFields();
+		this.props.handleCancel();
+	}
+
+	removeImage = (e) => {
+		if (e.thumbUrl == undefined) {
+			fetch(`${API_URL}/request/deleteImage/${e.uid}`, {
+				method: 'DELETE',
+			}).then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						message.success(data.message);
+					}
+					else {
+						message.error(data.message);
+					}
+				});
+		}
+	}
 
 	render() {
 		const { getFieldDecorator } = this.props.form;
@@ -136,7 +168,7 @@ class CreateAndEditModal extends Component {
 				title={user.adminType === 2 ? '"添加商品"' : "Бараа бүртгэх"}
 				visible={this.props.visible}
 				confirmLoading={this.props.confirmLoading}
-				onCancel={this.props.handleCancel}
+				onCancel={this.handleCancelModal}
 				footer={[
 					<Button type="primary" onClick={e => this.handleSubmit(e)}>救</Button>
 				]}
@@ -223,12 +255,13 @@ class CreateAndEditModal extends Component {
 								<Upload
 									action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
 									listType="picture-card"
-									fileList={this.renderFileList()}
+									fileList={fileList}
 									onPreview={this.handlePreview}
 									onChange={this.handleChange}
+									onRemove={this.removeImage}
 								>
 									{
-										!this.props.edit ? null : uploadButton
+										uploadButton
 									}
 								</Upload>
 								<Modal
