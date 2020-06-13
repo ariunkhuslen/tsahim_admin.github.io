@@ -86,6 +86,18 @@ class App extends Component {
     return null;
   }
 
+  isAdmin = () => {
+    let user = this.getUserData();
+    if (user == "") {
+      return false;
+    }
+
+    if (user.adminType == 1) {
+      return true;
+    }
+    return false;
+  }
+
   checkRoutes = (location, path, adminType, compon) => {
     let user = this.getUserData();
     if (user == "") {
@@ -134,9 +146,13 @@ class App extends Component {
                 <Menu.Item key="exit" style={{ float: 'right' }}>
                   <li onClick={this.exitWeb}>Гарах</li>
                 </Menu.Item>
-                <Menu.Item key="addAdmin" style={{ float: 'right' }}>
+                {
+                  this.isAdmin() ? 
+                  <Menu.Item key="addAdmin" style={{ float: 'right' }}>
                   <li onClick={(e) => this.changeModal(true)}>Амдин нэмэх</li>
                 </Menu.Item>
+                : null
+                }
               </Menu>
             </Header>
             <Row>

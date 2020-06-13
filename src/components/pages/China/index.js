@@ -210,6 +210,26 @@ class DashboardPage extends React.Component {
   };
 
   rowDoubleclick = (record, rowIndex) => {
+    fetch(API_URL + "/product/getProductDetailImg/" + record.id).then(function (response) { return response.json(); }).then(myJson => {
+      if(myJson.success)
+      {
+        let tmp = []
+        myJson.data.map((item, i) => {
+          let tmp1 = {
+            uid: item.id,
+            name: item.imgnm,
+            status: 'done',
+            url: API_URL + "/uploads/" + item.imgnm,
+            }
+            tmp.push(tmp1)
+        })
+        this.setState({ fileList: tmp })
+      }
+      else
+      {
+        message.error("Барааны зураг авхад алдаа гарлаа.");
+      }
+    });
     this.setState({ editData: record, visible: true, edit: true });
   }
 
@@ -272,7 +292,6 @@ class DashboardPage extends React.Component {
   }
 
   render() {
-    const { previewVisible, previewImage, fileList } = this.state;
     let user = JSON.parse(localStorage.getItem("userData"));
     return (
       <div style={{ padding: "20px" }}>

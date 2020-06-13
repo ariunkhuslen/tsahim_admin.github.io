@@ -42,8 +42,6 @@ class CreateAndEditModal extends Component {
 			return true;
 		}
 	}
-	/*  */
-
 	handleSubmit = e => {
 
 		if (this.getUserData() === true) {
@@ -70,11 +68,14 @@ class CreateAndEditModal extends Component {
 						if (edit) {
 							formData.append("id", this.props.editData.id);
 							formData.append("filename", this.props.editData.imgnm);
-						} else {
-							for (let i = 0; i < this.state.fileList.length; i++) {
-								formData.append("files", this.state.fileList[i].originFileObj);
-							}
 						}
+
+						for (let i = 0; i < this.state.fileList.length; i++) {
+							if(this.state.fileList[i].originFileObj !== undefined)
+							{
+							  formData.append("files", this.state.fileList[i].originFileObj);
+							} 
+						  }
 
 						let isEdit = edit === true ? "updateRequest" : "addRequest";
 
@@ -105,6 +106,25 @@ class CreateAndEditModal extends Component {
 	handleChange = ({ fileList }) => {
 		this.setState({ fileList });
 	};
+
+	removeImage = (e) => {
+		if(e.thumbUrl == undefined)
+		{
+		  fetch(`${API_URL}/product/deleteImage/${e.uid}`, {
+			method: 'DELETE',
+		  }).then(response => response.json())
+			.then(data => {
+			  if(data.success)
+			  {
+				message.success(data.message);
+			  }
+			  else
+			  {
+				message.error(data.message);
+			  }
+			});
+		}
+	  }
 
 	renderFileList = () => {
 		let tmp = [];
@@ -223,12 +243,13 @@ class CreateAndEditModal extends Component {
 								<Upload
 									action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
 									listType="picture-card"
-									fileList={this.renderFileList()}
+									fileList={fileList}
 									onPreview={this.handlePreview}
 									onChange={this.handleChange}
+									onRemove={this.removeImage}
 								>
 									{
-										!this.props.edit ? null : uploadButton
+										 uploadButton
 									}
 								</Upload>
 								<Modal
