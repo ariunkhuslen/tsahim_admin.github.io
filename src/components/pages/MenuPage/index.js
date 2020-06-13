@@ -72,17 +72,17 @@ class BrandPage extends React.Component {
 				key: "id"
 			},
 			{
-				title: "isenable",
+				title: "Идэвхитэй эсэх",
 				dataIndex: "isenable",
 				key: "isenable",
 			},
 			{
-				title: "name",
+				title: "Нэр",
 				dataIndex: "name",
 				key: "name",
 			},
 			{
-				title: "news",
+				title: "Мэдээ",
 				dataIndex: "news",
 				key: "news",
 			},
@@ -165,6 +165,7 @@ class BrandPage extends React.Component {
 		const { edit, editData, type } = this.state;
 
 		this.props.form.validateFields((err, values) => {
+			this.setState({ confirmLoading: true })
 			values.type = Number(type);
 			values.isenable = values.isenable === undefined ? 0 : 1;
 			values.parentid = Number(type) === 1 ? 0 : values.parentid;
@@ -180,12 +181,20 @@ class BrandPage extends React.Component {
 					method: "POST",
 					body: JSON.stringify(values)
 
-				}).then(() => {
-					message.success("Амжилттай");
-					this.getData();
-					this.handleCancel2();
-					this.props.form.resetFields();
-				});
+				}).then(res => res.json())
+				.then(data => {
+					if(data.success)
+						{
+							message.success(data.message);
+							this.getData();
+							this.handleCancel2();
+							this.props.form.resetFields();
+						}
+						else
+						{
+							message.success(data.message);
+						}
+				})
 			} else {
 				if (!err) {
 					let isEdit = edit === true ? "updateMenu" : "addMenu";
@@ -198,12 +207,20 @@ class BrandPage extends React.Component {
 						method: "POST",
 						body: JSON.stringify(values)
 
-					}).then(() => {
-						message.success("Амжилттай");
-						this.getData();
-						this.handleCancel2();
-						this.props.form.resetFields();
-					});
+					}).then(res => res.json())
+					.then(data => {
+						if(data.success)
+						{
+							message.success(data.message);
+							this.getData();
+							this.handleCancel2();
+							this.props.form.resetFields();
+						}
+						else
+						{
+							message.success(data.message);
+						}
+					})
 				}
 			}
 		});
