@@ -129,6 +129,7 @@ class DashboardPage extends React.Component {
           return;
         }
         else {
+          this.setState({ confirmLoading: true });
           var formData = new FormData();
           formData.append("spice", values.spice);
           formData.append("price", values.price);
@@ -170,6 +171,7 @@ class DashboardPage extends React.Component {
             {
               message.error(myJson.message);
             }
+            this.setState({ confirmLoading: false });
           });
         }
       }
@@ -280,7 +282,7 @@ class DashboardPage extends React.Component {
   }
 
   render() {
-    const { previewVisible, previewImage, fileList } = this.state;
+    const { previewVisible, previewImage, fileList, confirmLoading } = this.state;
     const { getFieldDecorator } = this.props.form;
     const uploadButton = (
       <div>
@@ -300,7 +302,7 @@ class DashboardPage extends React.Component {
         <Modal
           title="Бараа нэмэх"
           visible={this.state.visible2}
-          confirmLoading={this.state.confirmLoading}
+          confirmLoading={confirmLoading}
           onCancel={this.handleCancel2}
           footer={[
             <Button type="primary" onClick={e => this.handleSubmit(e)}>

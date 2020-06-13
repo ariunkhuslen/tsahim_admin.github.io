@@ -215,9 +215,9 @@ class DashboardPage extends React.Component {
   rowDoubleclick = (record, rowIndex) => {
     this.setState({ editData: record, visible: true, edit: true })
   }
-  plusFile = (fileList) => {
-    this.setState({ fileList });
-  }
+
+
+
   clickCell = (record, e) => {
     fetch(`${API_URL}/request/deleteRequest/${record.id}`, {
       method: 'DELETE',
@@ -277,7 +277,6 @@ class DashboardPage extends React.Component {
   }
 
   render() {
-    const { previewVisible, previewImage, fileList } = this.state;
     let user = JSON.parse(localStorage.getItem("userData"));
     return (
       <div style={{ padding: "20px" }}>

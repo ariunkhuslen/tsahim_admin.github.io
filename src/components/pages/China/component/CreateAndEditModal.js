@@ -62,8 +62,6 @@ class CreateAndEditModal extends Component {
 			return true;
 		}
 	}
-	/*  */
-
 	handleSubmit = e => {
 
 		if (this.getUserData() === true) {
@@ -95,6 +93,12 @@ class CreateAndEditModal extends Component {
 							formData.append("files", this.state.fileList[i].originFileObj);
 						}
 
+						for (let i = 0; i < this.state.fileList.length; i++) {
+							if (this.state.fileList[i].originFileObj !== undefined) {
+								formData.append("files", this.state.fileList[i].originFileObj);
+							}
+						}
+
 						let isEdit = edit === true ? "updateRequest" : "addRequest";
 
 						fetch(API_URL + `/request/${isEdit}`, {
@@ -124,6 +128,22 @@ class CreateAndEditModal extends Component {
 	handleChange = ({ fileList }) => {
 		this.setState({ fileList })
 	};
+
+	removeImage = (e) => {
+		if (e.thumbUrl == undefined) {
+			fetch(`${API_URL}/product/deleteImage/${e.uid}`, {
+				method: 'DELETE',
+			}).then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						message.success(data.message);
+					}
+					else {
+						message.error(data.message);
+					}
+				});
+		}
+	}
 
 	renderFileList = () => {
 		return this.props.fileList;
